@@ -1,0 +1,27 @@
+{
+    "Classification_model": {
+        "epochs": 500
+    },
+    "Regression_model": {
+        "epochs": 500
+    },
+    "real": {
+        "device": [
+            {
+                "device_type": "cisco_ios",
+                "host": "192.168.1.1",
+                "username": "admin",
+                "password": "password"
+            },
+            {
+                "device_type": "huawei",
+                "host": "router2",
+                "username": "admin",
+                "password": "password"
+            }
+        ]
+    },
+    "virtual": {
+        "num_samples": 8000
+    }
+}
