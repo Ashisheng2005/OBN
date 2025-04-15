@@ -16,17 +16,15 @@ pip install -r requirements.txt
    .\model\best_path_classification_model.weights.h5
    ```
 
-   对于1000条数据，100次学习，准确率可达到79.50%
-
    
 
    回归模型：
 
    ```bash
-   .\model\best_path_regression_model.weights.h5
+.\model\best_path_regression_model.weights.h5
    ```
-
-   对于1000条数据，75次学习，准确率达到64.94%
+   
+   模型训练的结果在./chart目录中查看
 
 
 
