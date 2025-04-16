@@ -8,39 +8,116 @@ pip install -r requirements.txt
 
 
 
-2. 已经训练好的模型文件
+已经训练好的模型文件
 
-   分类模型：
+分类模型：
 
-   ```bash
-   .\model\best_path_classification_model.weights.h5
-   ```
+```bash
+.\model\best_path_classification_model.weights.h5
+```
 
-   
+回归模型：
 
-   回归模型：
-
-   ```bash
+```bash
 .\model\best_path_regression_model.weights.h5
-   ```
-   
-   模型训练的结果在./chart目录中查看
+```
+
+回归模型采用R2评分。
+
+模型训练的结果将会保存在./chart目录中，一下是不同数量的训练结果(前者为分类模型，后者为回归模型，共三个数量级测试)：
+
+**100数量级**
+
+![Classification_100](.\chart\Classification_100.png)
+
+![Regression_100](.\chart\Regression_100.png)
+
+**1000数量级**
+
+![](.\chart\Classification_1000.png)
+
+![Regression_1000](.\chart\Regression_1000.png)
+
+**8000数量级**
+
+![Classification_8000](.\chart\Classification_8000.png)
+
+![Regression_8000](.\chart\Regression_8000.png)
+
+
+
+训练数据通过ospf和bgp结果通过算法模拟生成，如果想要更加接近现实可添加更复杂的数据。
+
+ospf数据存放位置：
+
+```bash
+.\data\ospf_data.txt
+```
+
+bgp数据存放位置：
+
+```bash
+.\data\bgp_data.txt
+```
+
+数据示例：
+
+```bash
+# BGP Data:
+BGP table version is 12, local router ID is 192.168.1.1
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal
+Origin codes: i - IGP, e - EGP, ? - incomplete
+
+   Network          Next Hop            Metric LocPrf Weight Path
+*> 10.1.1.0/24      192.168.2.2             100    100      0 65001 i
+*  10.1.2.0/24      192.168.2.3             200    100      0 65002 65003 i
+*> 172.16.1.0/24    192.168.2.4             150    200      0 65004 i
+*  10.1.3.0/24      192.168.2.5             120    80       0 65005 65006 65007 i
+*> 192.168.3.0/24   192.168.2.6             110    120      0 65008 i
+*  10.1.4.0/24      192.168.2.7             130    90       0 65009 65010 i
+*> 10.1.5.0/24      192.168.2.8             140    100      0 65001 65002 i
+*  172.16.2.0/24    192.168.2.9             160    150      0 65003 i
+*> 10.1.6.0/24      192.168.2.10            170    100      0 65004 65005 65006 i
+*  10.1.7.0/24      192.168.2.11            180    80       0 65007 i
+*> 192.168.4.0/24   192.168.2.12            190    200      0 65008 65009 i
+*  10.1.8.0/24      192.168.2.13            200    90       0 65010 i
+*> 10.1.9.0/24      192.168.2.14            210    100      0 65001 65002 65003 i
+*  172.16.3.0/24    192.168.2.15            220    120      0 65004 i
+*> 10.1.10.0/24     192.168.2.16            230    150      0 65005 i
+
+# OSPF Data:
+Neighbor ID     Pri   State           Dead Time   Address         Interface
+10.0.0.2        1     FULL/DR         00:00:38    192.168.1.2     GigabitEthernet0/0
+10.0.0.3        1     FULL/BDR        00:00:35    192.168.1.3     GigabitEthernet0/1
+10.0.0.4        1     2WAY/DROTHER    00:00:40    192.168.1.4     GigabitEthernet0/2
+10.0.0.5        0     DOWN/-          00:00:00    192.168.1.5     GigabitEthernet0/3
+10.0.0.6        1     FULL/DR         00:00:37    192.168.1.6     GigabitEthernet0/4
+10.0.0.7        1     FULL/BDR        00:00:36    192.168.1.7     GigabitEthernet0/5
+10.0.0.8        1     2WAY/DROTHER    00:00:39    192.168.1.8     GigabitEthernet0/6
+10.0.0.9        1     FULL/DR         00:00:38    192.168.1.9     GigabitEthernet0/7
+10.0.0.10       0     DOWN/-          00:00:00    192.168.1.10    GigabitEthernet0/8
+10.0.0.11       1     FULL/BDR        00:00:35    192.168.1.11    GigabitEthernet0/9
+```
 
 
 
 ## 训练模型
 
-训练模型的文件为
+在开始训练模型之前需要进行一些必要的配置，训练模型的文件为
 
 ```bash
 .\Training_model.py
 ```
 
+
+
+**真实环境获取数据进行训练**
+
 训练中的数据默认全部为模拟数据，如果你需要根据真实数据训练，可以对文件中21行如下设置：
 
 ```python
     def main(self):
-        training_data = Collect_network_data(mode="real").main()	# 设置mode为真实
+        training_data = Collect_network_data(mode="real").main()	# 设置mode为真实，默认为虚拟
         ...
 ```
 
@@ -68,11 +145,56 @@ pip install -r requirements.txt
 
 ```
 
-device中的每个值都是一台设备的配置，支持多设备批量获取。
+device中的每个哈希表都是一台设备的配置，支持多设备批量获取数据。
 
 
 
+**虚拟环境通过自定义数据进行训练**
 
+通过向**.\data\ospf_data.txt** 和 **.\data\bgp_data.txt **中添加网络协议数据进行训练，默认提供一些数据。
+
+
+
+**调整配置文件**
+
+```json
+# ./config.json
+...
+
+    "Classification_model": {
+        "epochs": 500	# 分类模型训练步数
+    },
+    "Regression_model": {
+        "epochs": 500	# 回归模型训练步数
+    },
+...
+"virtual": {
+        "num_samples": 8000		# 虚拟环境生成的数据集大小
+    }
+
+```
+
+实际训练中可能跑不到设定的步数，因为模型为了防止过拟合引入了**早停**机制。
+
+
+
+配置文件修改完成后即可启动训练文件：
+
+```bash
+python Training_model.py
+```
+
+
+
+复杂环境设置：
+
+模型实习了动态批量大小，根据数据量动态调整batch_size大小（小数据量用小批量，大数据量用大批量）
+
+```python
+batch_size = 32 if data_size < 1000 else 64 if data_size < 5000 else 128
+```
+
+在训练文件**Training_model.py**中，分类模型和回归模型**都存在各自的语句**，可根据实际需求修改：
 
 # 更新内容
 

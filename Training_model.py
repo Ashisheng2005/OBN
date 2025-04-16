@@ -103,38 +103,38 @@ class run:
 
         # 分类模型
         print("分类模型训练")
-        x_y = pd.table_classification_model()
-        X_train, X_test, y_train, y_test = x_y
+        try:
+            x_y = pd.table_classification_model()
+            X_train, X_test, y_train, y_test = x_y
 
-        # 使用SMOTE 数据增强, 平衡is_best平衡
-        smote = SMOTE(random_state=42)
-        X_train, y_train = smote.fit_resample(X_train, y_train)
+            # 使用SMOTE 数据增强, 平衡is_best平衡
+            smote = SMOTE(random_state=42)
+            X_train, y_train = smote.fit_resample(X_train, y_train)
 
-        # 验证数据分布
-        logging.info(f"Classification data: y_train distribution: {np.unique(y_train, return_counts=True)}")
+            # 验证数据分布
+            logging.info(f"Classification data: y_train distribution: {np.unique(y_train, return_counts=True)}")
 
-        # 动态批量大小
-        data_size = len(X_train)
-        batch_size = 32 if data_size < 1000 else 64 if data_size < 5000 else 128
+            # 动态批量大小
+            data_size = len(X_train)
+            batch_size = 32 if data_size < 1000 else 64 if data_size < 5000 else 128
 
-        model = Model(*x_y)
-        classification_history, accuracy = model.Classification_model(
-            epochs=self.set["Classification_model"]["epochs"],
-            batch_size=batch_size,
-            data_size=data_size
-        )
+            model = Model(*x_y)
+            classification_history, accuracy = model.Classification_model(
+                epochs=self.set["Classification_model"]["epochs"],
+                batch_size=batch_size,
+                data_size=data_size
+            )
 
-        # 绘制训练和验证损失曲线，检查过拟合
-        plot_training_history(classification_history, "Classification", data_size=self.set["virtual"]["num_samples"])
+            # 绘制训练和验证损失曲线，检查过拟合
+            plot_training_history(classification_history, "Classification", data_size=self.set["virtual"]["num_samples"])
+        except Exception as e:
+            logging.error(f"classification Model Error: {e}")
 
         # 回归模型训练
         print("\n\n回归模型训练")
         try:
             x_y = pd.table_regression_model()
             X_train, X_test, y_train, y_test = x_y
-
-            # 数据增强
-            # X_train, y_train = smote.fit_resample(X_train, y_train)
 
             # 验证目标值分布
             logging.info(f"Regression data: y_train mean={y_train.mean():.4f}, std={y_train.std():.4f}")
@@ -152,6 +152,8 @@ class run:
 
             plot_training_history(regression_history, model_name="Regression", data_size=self.set["virtual"]["num_samples"], r2=r2)
         except ValueError as e:
+            logging.error(f"Regression model error: {e}")
+        except Exception as e:
             logging.error(f"Regression model error: {e}")
 
 
