@@ -28,21 +28,21 @@ pip install -r requirements.txt
 
 **100数量级**
 
-![Classification_100](.\chart\Classification_100.png)
+![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Classification_100.png)
 
-![Regression_100](.\chart\Regression_100.png)
+![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Regression_100.png)
 
 **1000数量级**
 
-![](.\chart\Classification_1000.png)
+![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Classification_1000.png)
 
-![Regression_1000](.\chart\Regression_1000.png)
+![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Regression_1000.png)
 
 **8000数量级**
 
-![Classification_8000](.\chart\Classification_8000.png)
+![Classification_8000](https://github.com/Ashisheng2005/OBN/blob/main/chart/Classification_8000.png)
 
-![Regression_8000](.\chart\Regression_8000.png)
+![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Regression_8000.png)
 
 
 
