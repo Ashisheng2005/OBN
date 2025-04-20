@@ -30,7 +30,7 @@ pip install -r requirements.txt
 
 **8000数量级**
 
-![Classification_8000](https://github.com/Ashisheng2005/OBN/blob/main/Classification_20316.png)
+![](https://github.com/Ashisheng2005/OBN/blob/main/Classification_20316.png)
 
 ![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Classification_pr_roc.png)
 
