@@ -1,0 +1,343 @@
+2025-04-20 11:51:28,251 - src.utils.logger - INFO - Starting network path optimization pipeline
+2025-04-20 11:51:28,400 - src.utils.logger - INFO - Initial DataFrame shape: (8000, 18)
+2025-04-20 11:51:29,158 - src.utils.logger - INFO - path_cost column created successfully
+2025-04-20 11:51:29,159 - src.utils.logger - INFO - path_cost head: 0    31.046197
+1    10.058382
+2    14.199641
+3    10.209575
+4    10.218587
+Name: path_cost, dtype: float64
+2025-04-20 11:51:29,161 - src.utils.logger - INFO - FastEthernet packet_loss: mean=9.7757, std=15.9081
+2025-04-20 11:51:29,162 - src.utils.logger - INFO - GigabitEthernet packet_loss: mean=9.7049, std=15.9792
+2025-04-20 11:51:29,163 - src.utils.logger - INFO - TenGigabitEthernet packet_loss: mean=9.9649, std=16.2923
+2025-04-20 11:51:29,163 - src.utils.logger - INFO - packet_loss statistics: mean=9.8150, std=16.0606
+2025-04-20 11:51:29,165 - src.utils.logger - INFO - packet_loss quantiles: 0.25     0.0000
+0.50     1.7300
+0.75    13.0025
+0.95    50.1810
+Name: packet_loss, dtype: float64
+2025-04-20 11:51:29,165 - src.utils.logger - INFO - High packet loss (>10): 2128 samples, 26.60%
+2025-04-20 11:51:29,205 - src.utils.logger - INFO - Generated data summary:
+       as_path_length   local_pref  ...  latency_bandwidth_ratio_log    path_cost
+count     8000.000000  8000.000000  ...                  8000.000000  8000.000000
+mean         1.658750   111.427500  ...                     0.230661    16.028310
+std          0.783821    37.056833  ...                     0.552323    10.199043
+min          1.000000    80.000000  ...                     0.001000     4.780080
+25%          1.000000    90.000000  ...                     0.003892     8.803249
+50%          1.000000   100.000000  ...                     0.025863    10.912015
+75%          2.000000   120.000000  ...                     0.095310    25.203568
+max          3.000000   250.000000  ...                     4.285658    60.929744
+
+[8 rows x 25 columns]
+2025-04-20 11:51:29,206 - src.utils.logger - INFO - is_best distribution: is_best
+0    0.97475
+1    0.02525
+Name: proportion, dtype: float64
+2025-04-20 11:51:29,206 - src.utils.logger - INFO - jitter summary: mean=13.0027, std=15.2447
+2025-04-20 11:51:29,207 - src.utils.logger - INFO - rtt summary: mean=80.9451, std=63.0716
+2025-04-20 11:51:29,207 - src.utils.logger - INFO - cpu_usage summary: mean=38.9751, std=18.2304
+2025-04-20 11:51:29,207 - src.utils.logger - INFO - memory_usage summary: mean=46.0968, std=15.0160
+2025-04-20 11:51:29,207 - src.utils.logger - INFO - queue_length summary: mean=41.6760, std=59.5625
+2025-04-20 11:51:29,207 - src.utils.logger - INFO - route_stability summary: mean=4.6898, std=5.4729
+2025-04-20 11:51:29,207 - src.utils.logger - INFO - latency_bandwidth_ratio summary: mean=0.7281, std=2.9972
+2025-04-20 11:51:29,207 - src.utils.logger - INFO - path_cost summary: mean=16.0283, std=10.1990
+2025-04-20 11:51:29,207 - src.utils.logger - INFO - Final DataFrame shape: (8000, 25)
+2025-04-20 11:51:29,208 - src.utils.logger - INFO - Training classification model
+2025-04-20 11:51:29,383 - src.utils.logger - INFO - Classification data: y_train distribution: (array([0, 1]), array([6238, 6238]))
+2025-04-20 11:51:45,291 - src.utils.logger - INFO - Test Accuracy: 98.25%
+2025-04-20 11:51:45,488 - src.utils.logger - INFO - Saved plot to ./chart/Classification_12476.png
+2025-04-20 11:51:45,488 - src.utils.logger - INFO - Training regression model
+2025-04-20 11:51:45,490 - src.utils.logger - INFO - After dropping NaN: Data shape=(8000, 25)
+2025-04-20 11:51:45,493 - src.utils.logger - INFO - Raw data: X shape=(8000, 22), y shape=(8000,)
+2025-04-20 11:51:45,494 - src.utils.logger - INFO - After split: X_train shape=(6400, 22), y_train shape=(6400,), X_test shape=(1600, 22), y_test shape=(1600,)
+2025-04-20 11:51:45,499 - src.utils.logger - INFO - After scaling: X_train shape=(6400, 22), y_train shape=(6400,)
+2025-04-20 11:51:45,501 - src.utils.logger - INFO - Regression data: y_train mean=0.0000, std=1.0000
+2025-04-20 11:52:12,949 - src.utils.logger - INFO - Saved plot to ./chart/Regression_6400.png
+2025-04-20 11:52:12,949 - src.utils.logger - INFO - Pipeline completed successfully
+2025-04-20 12:05:13,692 - src.utils.logger - INFO - Starting network path optimization pipeline
+2025-04-20 12:05:13,821 - src.utils.logger - INFO - Initial DataFrame shape: (8000, 18)
+2025-04-20 12:05:14,276 - src.utils.logger - ERROR - Pipeline failed: 'is_Fast'
+2025-04-20 12:07:48,167 - src.utils.logger - INFO - Starting network path optimization pipeline
+2025-04-20 12:07:48,320 - src.utils.logger - INFO - Initial DataFrame shape: (8000, 18)
+2025-04-20 12:07:49,088 - src.utils.logger - INFO - path_cost column created successfully
+2025-04-20 12:07:49,089 - src.utils.logger - INFO - path_cost head: 0     8.390675
+1    29.347625
+2    12.395435
+3    14.358576
+4    12.801655
+Name: path_cost, dtype: float64
+2025-04-20 12:07:49,090 - src.utils.logger - INFO - FastEthernet packet_loss: mean=9.9701, std=16.1100
+2025-04-20 12:07:49,091 - src.utils.logger - INFO - GigabitEthernet packet_loss: mean=9.3824, std=15.5836
+2025-04-20 12:07:49,092 - src.utils.logger - INFO - TenGigabitEthernet packet_loss: mean=8.9859, std=15.4279
+2025-04-20 12:07:49,092 - src.utils.logger - INFO - packet_loss statistics: mean=9.4428, std=15.7100
+2025-04-20 12:07:49,093 - src.utils.logger - INFO - packet_loss quantiles: 0.25     0.0000
+0.50     1.7500
+0.75    11.0650
+0.95    49.9005
+Name: packet_loss, dtype: float64
+2025-04-20 12:07:49,094 - src.utils.logger - INFO - High packet loss (>10): 2045 samples, 25.56%
+2025-04-20 12:07:49,137 - src.utils.logger - INFO - Generated data summary:
+       as_path_length   local_pref  ...  latency_bandwidth_ratio_log    path_cost
+count     8000.000000  8000.000000  ...                  8000.000000  8000.000000
+mean         1.665750   111.448750  ...                     0.230541    15.827767
+std          0.786037    36.957196  ...                     0.552022    10.140236
+min          1.000000    80.000000  ...                     0.001000     4.875860
+25%          1.000000    90.000000  ...                     0.003195     8.770212
+50%          1.000000   100.000000  ...                     0.025863    10.807960
+75%          2.000000   120.000000  ...                     0.095310    24.324134
+max          3.000000   250.000000  ...                     4.247073    63.596695
+
+[8 rows x 25 columns]
+2025-04-20 12:07:49,138 - src.utils.logger - INFO - is_best distribution: is_best
+0    0.973625
+1    0.026375
+Name: proportion, dtype: float64
+2025-04-20 12:07:49,138 - src.utils.logger - INFO - jitter summary: mean=12.7127, std=15.1787
+2025-04-20 12:07:49,138 - src.utils.logger - INFO - rtt summary: mean=79.4776, std=62.2740
+2025-04-20 12:07:49,138 - src.utils.logger - INFO - cpu_usage summary: mean=39.2050, std=18.2529
+2025-04-20 12:07:49,138 - src.utils.logger - INFO - memory_usage summary: mean=45.9420, std=14.9994
+2025-04-20 12:07:49,138 - src.utils.logger - INFO - queue_length summary: mean=41.1781, std=59.8291
+2025-04-20 12:07:49,138 - src.utils.logger - INFO - route_stability summary: mean=4.5780, std=5.4434
+2025-04-20 12:07:49,138 - src.utils.logger - INFO - latency_bandwidth_ratio summary: mean=0.7413, std=3.2076
+2025-04-20 12:07:49,138 - src.utils.logger - INFO - path_cost summary: mean=15.8278, std=10.1402
+2025-04-20 12:07:49,138 - src.utils.logger - INFO - Final DataFrame shape: (8000, 25)
+2025-04-20 12:07:49,139 - src.utils.logger - INFO - Training classification model
+2025-04-20 12:07:49,324 - src.utils.logger - INFO - Classification data: y_train distribution: (array([0, 1]), array([6231, 6231]))
+2025-04-20 12:08:10,482 - src.utils.logger - INFO - Test Accuracy: 98.50%
+2025-04-20 12:08:10,686 - src.utils.logger - INFO - Saved plot to ./chart/Classification_12462.png
+2025-04-20 12:08:10,686 - src.utils.logger - INFO - Training regression model
+2025-04-20 12:08:10,688 - src.utils.logger - INFO - After dropping NaN: Data shape=(8000, 25)
+2025-04-20 12:08:10,689 - src.utils.logger - INFO - Raw data: X shape=(8000, 22), y shape=(8000,)
+2025-04-20 12:08:10,690 - src.utils.logger - INFO - After split: X_train shape=(6400, 22), y_train shape=(6400,), X_test shape=(1600, 22), y_test shape=(1600,)
+2025-04-20 12:08:10,694 - src.utils.logger - INFO - After scaling: X_train shape=(6400, 22), y_train shape=(6400,)
+2025-04-20 12:08:10,695 - src.utils.logger - INFO - Regression data: y_train mean=0.0000, std=1.0000
+2025-04-20 12:08:38,798 - src.utils.logger - INFO - Saved plot to ./chart/Regression_6400.png
+2025-04-20 12:08:38,799 - src.utils.logger - INFO - Pipeline completed successfully
+2025-04-20 13:29:04,723 - src.utils.logger - INFO - Starting network path optimization pipeline
+2025-04-20 13:29:04,962 - src.utils.logger - INFO - Initial DataFrame shape: (8000, 18)
+2025-04-20 13:29:05,734 - src.utils.logger - INFO - path_cost column created successfully
+2025-04-20 13:29:05,735 - src.utils.logger - INFO - path_cost head: 0    12.321355
+1    14.885538
+2    10.125975
+3    56.095410
+4    29.840046
+Name: path_cost, dtype: float64
+2025-04-20 13:29:05,735 - src.utils.logger - INFO - FastEthernet packet_loss: mean=9.8373, std=16.0294
+2025-04-20 13:29:05,736 - src.utils.logger - INFO - GigabitEthernet packet_loss: mean=9.0989, std=15.5349
+2025-04-20 13:29:05,737 - src.utils.logger - INFO - TenGigabitEthernet packet_loss: mean=10.5468, std=16.6724
+2025-04-20 13:29:05,737 - src.utils.logger - INFO - packet_loss statistics: mean=9.8302, std=16.0961
+2025-04-20 13:29:05,739 - src.utils.logger - INFO - packet_loss quantiles: 0.25     0.000
+0.50     1.770
+0.75    12.525
+0.95    50.100
+Name: packet_loss, dtype: float64
+2025-04-20 13:29:05,739 - src.utils.logger - INFO - High packet loss (>10): 2119 samples, 26.49%
+2025-04-20 13:29:05,775 - src.utils.logger - INFO - Generated data summary:
+       as_path_length   local_pref  ...  latency_bandwidth_ratio_log    path_cost
+count     8000.000000  8000.000000  ...                  8000.000000  8000.000000
+mean         1.656500   111.560000  ...                     0.232656    16.049452
+std          0.784592    37.425145  ...                     0.557252    10.143756
+min          1.000000    80.000000  ...                     0.001000     4.918820
+25%          1.000000    90.000000  ...                     0.004390     8.820575
+50%          1.000000   100.000000  ...                     0.030578    10.974665
+75%          2.000000   120.000000  ...                     0.095310    25.117947
+max          3.000000   250.000000  ...                     4.301804    65.492774
+
+[8 rows x 25 columns]
+2025-04-20 13:29:05,776 - src.utils.logger - INFO - is_best distribution: is_best
+0    0.97575
+1    0.02425
+Name: proportion, dtype: float64
+2025-04-20 13:29:05,776 - src.utils.logger - INFO - jitter summary: mean=13.0121, std=15.1777
+2025-04-20 13:29:05,776 - src.utils.logger - INFO - rtt summary: mean=80.4827, std=62.4234
+2025-04-20 13:29:05,776 - src.utils.logger - INFO - cpu_usage summary: mean=38.9770, std=18.3799
+2025-04-20 13:29:05,777 - src.utils.logger - INFO - memory_usage summary: mean=45.9532, std=15.0325
+2025-04-20 13:29:05,777 - src.utils.logger - INFO - queue_length summary: mean=42.5724, std=60.2665
+2025-04-20 13:29:05,777 - src.utils.logger - INFO - route_stability summary: mean=4.7099, std=5.4553
+2025-04-20 13:29:05,777 - src.utils.logger - INFO - latency_bandwidth_ratio summary: mean=0.7524, std=3.1715
+2025-04-20 13:29:05,777 - src.utils.logger - INFO - path_cost summary: mean=16.0495, std=10.1438
+2025-04-20 13:29:05,777 - src.utils.logger - INFO - Final DataFrame shape: (8000, 25)
+2025-04-20 13:29:05,778 - src.utils.logger - INFO - Training classification model
+2025-04-20 13:29:05,948 - src.utils.logger - INFO - Classification data: y_train distribution: (array([0, 1]), array([6245, 6245]))
+2025-04-20 13:29:24,221 - src.utils.logger - INFO - Test Accuracy: 98.44%
+2025-04-20 13:29:24,465 - src.utils.logger - INFO - Saved plot to ./chart/Classification_12490.png
+2025-04-20 13:29:24,465 - src.utils.logger - INFO - Training regression model
+2025-04-20 13:29:24,468 - src.utils.logger - INFO - After dropping NaN: Data shape=(8000, 25)
+2025-04-20 13:29:24,469 - src.utils.logger - INFO - Raw data: X shape=(8000, 22), y shape=(8000,)
+2025-04-20 13:29:24,471 - src.utils.logger - INFO - After split: X_train shape=(6400, 22), y_train shape=(6400,), X_test shape=(1600, 22), y_test shape=(1600,)
+2025-04-20 13:29:24,475 - src.utils.logger - INFO - After scaling: X_train shape=(6400, 22), y_train shape=(6400,)
+2025-04-20 13:29:24,477 - src.utils.logger - INFO - Regression data: y_train mean=-0.0000, std=1.0000
+2025-04-20 13:29:56,271 - src.utils.logger - INFO - Saved plot to ./chart/Regression_6400.png
+2025-04-20 13:29:56,271 - src.utils.logger - INFO - Pipeline completed successfully
+2025-04-20 13:42:58,206 - src.utils.logger - INFO - Starting network path optimization pipeline
+2025-04-20 13:42:58,484 - src.utils.logger - INFO - Initial DataFrame shape: (8000, 18)
+2025-04-20 13:42:59,508 - src.utils.logger - INFO - path_cost column created successfully
+2025-04-20 13:42:59,509 - src.utils.logger - INFO - path_cost head: 0    12.400035
+1    18.073260
+2    10.402355
+3     9.553920
+4    30.641648
+Name: path_cost, dtype: float64
+2025-04-20 13:42:59,510 - src.utils.logger - INFO - FastEthernet packet_loss: mean=9.9001, std=16.2337
+2025-04-20 13:42:59,511 - src.utils.logger - INFO - GigabitEthernet packet_loss: mean=9.6018, std=15.6145
+2025-04-20 13:42:59,511 - src.utils.logger - INFO - TenGigabitEthernet packet_loss: mean=9.9716, std=15.9373
+2025-04-20 13:42:59,513 - src.utils.logger - INFO - packet_loss statistics: mean=9.8233, std=15.9273
+2025-04-20 13:42:59,514 - src.utils.logger - INFO - packet_loss quantiles: 0.25     0.0000
+0.50     1.9100
+0.75    12.8925
+0.95    49.9210
+Name: packet_loss, dtype: float64
+2025-04-20 13:42:59,516 - src.utils.logger - INFO - High packet loss (>10): 2147 samples, 26.84%
+2025-04-20 13:42:59,604 - src.utils.logger - INFO - Generated data summary:
+       as_path_length   local_pref  ...  latency_bandwidth_ratio_log    path_cost
+count     8000.000000  8000.000000  ...                  8000.000000  8000.000000
+mean         1.683375   111.930000  ...                     0.234402    16.146600
+std          0.788480    37.960904  ...                     0.558325    10.232861
+min          1.000000    80.000000  ...                     0.001000     5.308667
+25%          1.000000    90.000000  ...                     0.004092     8.788174
+50%          1.000000   100.000000  ...                     0.031353    10.998170
+75%          2.000000   120.000000  ...                     0.095310    25.260176
+max          3.000000   250.000000  ...                     4.354626    60.912641
+
+[8 rows x 25 columns]
+2025-04-20 13:42:59,606 - src.utils.logger - INFO - is_best distribution: is_best
+0    0.97525
+1    0.02475
+Name: proportion, dtype: float64
+2025-04-20 13:42:59,607 - src.utils.logger - INFO - jitter summary: mean=13.2273, std=15.5337
+2025-04-20 13:42:59,608 - src.utils.logger - INFO - rtt summary: mean=81.4395, std=63.4557
+2025-04-20 13:42:59,608 - src.utils.logger - INFO - cpu_usage summary: mean=39.0703, std=18.1156
+2025-04-20 13:42:59,608 - src.utils.logger - INFO - memory_usage summary: mean=46.0137, std=15.0980
+2025-04-20 13:42:59,608 - src.utils.logger - INFO - queue_length summary: mean=42.3349, std=60.8552
+2025-04-20 13:42:59,609 - src.utils.logger - INFO - route_stability summary: mean=4.7562, std=5.4949
+2025-04-20 13:42:59,609 - src.utils.logger - INFO - latency_bandwidth_ratio summary: mean=0.7617, std=3.2685
+2025-04-20 13:42:59,610 - src.utils.logger - INFO - path_cost summary: mean=16.1466, std=10.2329
+2025-04-20 13:42:59,610 - src.utils.logger - INFO - Final DataFrame shape: (8000, 25)
+2025-04-20 13:42:59,611 - src.utils.logger - INFO - Training classification model
+2025-04-20 13:42:59,910 - src.utils.logger - INFO - Classification data: y_train distribution: (array([0, 1]), array([6242, 6242]))
+2025-04-20 13:43:29,318 - src.utils.logger - INFO - Test Accuracy: 98.81%
+2025-04-20 13:43:29,318 - absl - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-04-20 13:43:29,555 - src.utils.logger - INFO - Saved plot to ./chart/Classification_12484.png
+2025-04-20 13:43:29,555 - src.utils.logger - INFO - Training regression model
+2025-04-20 13:43:29,557 - src.utils.logger - INFO - After dropping NaN: Data shape=(8000, 25)
+2025-04-20 13:43:29,558 - src.utils.logger - INFO - Raw data: X shape=(8000, 22), y shape=(8000,)
+2025-04-20 13:43:29,560 - src.utils.logger - INFO - After split: X_train shape=(6400, 22), y_train shape=(6400,), X_test shape=(1600, 22), y_test shape=(1600,)
+2025-04-20 13:43:29,564 - src.utils.logger - INFO - After scaling: X_train shape=(6400, 22), y_train shape=(6400,)
+2025-04-20 13:43:29,566 - src.utils.logger - INFO - Regression data: y_train mean=0.0000, std=1.0000
+2025-04-20 13:44:01,366 - absl - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-04-20 13:44:01,548 - src.utils.logger - INFO - Saved plot to ./chart/Regression_6400.png
+2025-04-20 13:44:01,549 - src.utils.logger - INFO - Pipeline completed successfully
+2025-04-20 13:53:39,941 - src.utils.logger - INFO - Starting network path optimization pipeline
+2025-04-20 13:53:40,089 - src.utils.logger - INFO - Initial DataFrame shape: (8000, 18)
+2025-04-20 13:53:40,853 - src.utils.logger - INFO - path_cost column created successfully
+2025-04-20 13:53:40,854 - src.utils.logger - INFO - path_cost head: 0    27.337288
+1     8.366027
+2    10.899289
+3    13.236318
+4     9.019180
+Name: path_cost, dtype: float64
+2025-04-20 13:53:40,855 - src.utils.logger - INFO - FastEthernet packet_loss: mean=9.7705, std=15.9039
+2025-04-20 13:53:40,858 - src.utils.logger - INFO - GigabitEthernet packet_loss: mean=10.6870, std=16.5517
+2025-04-20 13:53:40,859 - src.utils.logger - INFO - TenGigabitEthernet packet_loss: mean=9.6020, std=15.8153
+2025-04-20 13:53:40,860 - src.utils.logger - INFO - packet_loss statistics: mean=10.0126, std=16.0935
+2025-04-20 13:53:40,862 - src.utils.logger - INFO - packet_loss quantiles: 0.25     0.000
+0.50     1.865
+0.75    13.925
+0.95    50.040
+Name: packet_loss, dtype: float64
+2025-04-20 13:53:40,863 - src.utils.logger - INFO - High packet loss (>10): 2193 samples, 27.41%
+2025-04-20 13:53:40,908 - src.utils.logger - INFO - Generated data summary:
+       as_path_length   local_pref  ...  latency_bandwidth_ratio_log    path_cost
+count     8000.000000  8000.000000  ...                  8000.000000  8000.000000
+mean         1.669500   111.503750  ...                     0.241184    16.236009
+std          0.788732    36.934019  ...                     0.566930    10.241089
+min          1.000000    80.000000  ...                     0.001000     4.917520
+25%          1.000000    90.000000  ...                     0.003693     8.847620
+50%          1.000000   100.000000  ...                     0.031499    11.050198
+75%          2.000000   120.000000  ...                     0.095310    25.461020
+max          3.000000   250.000000  ...                     4.474699    67.699732
+
+[8 rows x 25 columns]
+2025-04-20 13:53:40,909 - src.utils.logger - INFO - is_best distribution: is_best
+0    0.976625
+1    0.023375
+Name: proportion, dtype: float64
+2025-04-20 13:53:40,909 - src.utils.logger - INFO - jitter summary: mean=13.2062, std=15.2201
+2025-04-20 13:53:40,909 - src.utils.logger - INFO - rtt summary: mean=81.9435, std=63.1863
+2025-04-20 13:53:40,910 - src.utils.logger - INFO - cpu_usage summary: mean=38.8229, std=18.4081
+2025-04-20 13:53:40,910 - src.utils.logger - INFO - memory_usage summary: mean=46.1367, std=14.9526
+2025-04-20 13:53:40,910 - src.utils.logger - INFO - queue_length summary: mean=43.3294, std=61.1659
+2025-04-20 13:53:40,910 - src.utils.logger - INFO - route_stability summary: mean=4.7955, std=5.5117
+2025-04-20 13:53:40,910 - src.utils.logger - INFO - latency_bandwidth_ratio summary: mean=0.7978, std=3.5331
+2025-04-20 13:53:40,910 - src.utils.logger - INFO - path_cost summary: mean=16.2360, std=10.2411
+2025-04-20 13:53:40,911 - src.utils.logger - INFO - Final DataFrame shape: (8000, 25)
+2025-04-20 13:53:40,911 - src.utils.logger - INFO - Training classification model
+2025-04-20 13:53:41,108 - src.utils.logger - INFO - Classification data: y_train distribution: (array([0, 1]), array([6250, 6250]))
+2025-04-20 13:54:10,369 - src.utils.logger - INFO - Test Accuracy: 98.31%
+2025-04-20 13:54:10,370 - absl - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-04-20 13:54:10,585 - src.utils.logger - INFO - Saved plot to ./chart/Classification_12500.png
+2025-04-20 13:54:10,586 - src.utils.logger - INFO - Training regression model
+2025-04-20 13:54:10,588 - src.utils.logger - INFO - After dropping NaN: Data shape=(8000, 25)
+2025-04-20 13:54:10,589 - src.utils.logger - INFO - Raw data: X shape=(8000, 22), y shape=(8000,)
+2025-04-20 13:54:10,591 - src.utils.logger - INFO - After split: X_train shape=(6400, 22), y_train shape=(6400,), X_test shape=(1600, 22), y_test shape=(1600,)
+2025-04-20 13:54:10,594 - src.utils.logger - INFO - After scaling: X_train shape=(6400, 22), y_train shape=(6400,)
+2025-04-20 13:54:10,596 - src.utils.logger - INFO - Regression data: y_train mean=-0.0000, std=1.0000
+2025-04-20 13:54:56,770 - absl - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-04-20 13:54:57,031 - src.utils.logger - INFO - Saved plot to ./chart/Regression_6400.png
+2025-04-20 13:54:57,031 - src.utils.logger - INFO - Pipeline completed successfully
+2025-04-20 14:24:48,810 - src.utils.logger - INFO - Starting network path optimization pipeline
+2025-04-20 14:24:49,042 - src.utils.logger - INFO - Initial DataFrame shape: (8000, 18)
+2025-04-20 14:24:49,664 - src.utils.logger - INFO - path_cost column created successfully
+2025-04-20 14:24:49,665 - src.utils.logger - INFO - path_cost head: 0    10.167827
+1     9.295887
+2    30.830798
+3    29.199038
+4    14.797258
+Name: path_cost, dtype: float64
+2025-04-20 14:24:49,666 - src.utils.logger - INFO - FastEthernet packet_loss: mean=10.9884, std=16.8672
+2025-04-20 14:24:49,667 - src.utils.logger - INFO - GigabitEthernet packet_loss: mean=9.6264, std=16.0141
+2025-04-20 14:24:49,667 - src.utils.logger - INFO - TenGigabitEthernet packet_loss: mean=9.6185, std=15.8299
+2025-04-20 14:24:49,668 - src.utils.logger - INFO - packet_loss statistics: mean=10.0747, std=16.2510
+2025-04-20 14:24:49,669 - src.utils.logger - INFO - packet_loss quantiles: 0.25     0.0000
+0.50     1.8550
+0.75    13.5700
+0.95    50.1405
+Name: packet_loss, dtype: float64
+2025-04-20 14:24:49,669 - src.utils.logger - INFO - High packet loss (>10): 2184 samples, 27.30%
+2025-04-20 14:24:49,716 - src.utils.logger - INFO - Generated data summary:
+       as_path_length   local_pref  ...  latency_bandwidth_ratio_log    path_cost
+count      8000.00000  8000.000000  ...                  8000.000000  8000.000000
+mean          1.66550   111.312500  ...                     0.250683    16.247350
+std           0.78752    36.359216  ...                     0.587302    10.468572
+min           1.00000    80.000000  ...                     0.001000     4.693800
+25%           1.00000    90.000000  ...                     0.003494     8.774696
+50%           1.00000   100.000000  ...                     0.025863    10.919943
+75%           2.00000   120.000000  ...                     0.095310    25.456942
+max           3.00000   250.000000  ...                     4.496059    68.043679
+
+[8 rows x 25 columns]
+2025-04-20 14:24:49,717 - src.utils.logger - INFO - is_best distribution: is_best
+0    0.977625
+1    0.022375
+Name: proportion, dtype: float64
+2025-04-20 14:24:49,718 - src.utils.logger - INFO - jitter summary: mean=13.3384, std=15.6023
+2025-04-20 14:24:49,718 - src.utils.logger - INFO - rtt summary: mean=82.1659, std=64.3458
+2025-04-20 14:24:49,718 - src.utils.logger - INFO - cpu_usage summary: mean=38.8019, std=18.3651
+2025-04-20 14:24:49,718 - src.utils.logger - INFO - memory_usage summary: mean=46.1162, std=15.0404
+2025-04-20 14:24:49,719 - src.utils.logger - INFO - queue_length summary: mean=42.7627, std=61.0349
+2025-04-20 14:24:49,719 - src.utils.logger - INFO - route_stability summary: mean=4.8349, std=5.5832
+2025-04-20 14:24:49,719 - src.utils.logger - INFO - latency_bandwidth_ratio summary: mean=0.8287, std=3.2749
+2025-04-20 14:24:49,719 - src.utils.logger - INFO - path_cost summary: mean=16.2474, std=10.4686
+2025-04-20 14:24:49,719 - src.utils.logger - INFO - Final DataFrame shape: (8000, 25)
+2025-04-20 14:24:49,720 - src.utils.logger - INFO - Training classification model
+2025-04-20 14:24:49,894 - src.utils.logger - INFO - Classification data: y_train distribution: (array([0, 1]), array([6257, 6257]))
+2025-04-20 14:25:05,486 - src.utils.logger - INFO - Test Accuracy: 97.62%
+2025-04-20 14:25:05,689 - src.utils.logger - INFO - Saved plot to ./chart/Classification_12514.png
+2025-04-20 14:25:05,689 - src.utils.logger - INFO - Training regression model
+2025-04-20 14:25:05,692 - src.utils.logger - INFO - After dropping NaN: Data shape=(8000, 25)
+2025-04-20 14:25:05,692 - src.utils.logger - INFO - Raw data: X shape=(8000, 22), y shape=(8000,)
+2025-04-20 14:25:05,694 - src.utils.logger - INFO - After split: X_train shape=(6400, 22), y_train shape=(6400,), X_test shape=(1600, 22), y_test shape=(1600,)
+2025-04-20 14:25:05,698 - src.utils.logger - INFO - After scaling: X_train shape=(6400, 22), y_train shape=(6400,)
+2025-04-20 14:25:05,699 - src.utils.logger - INFO - Regression data: y_train mean=-0.0000, std=1.0000
+2025-04-20 14:25:37,291 - src.utils.logger - INFO - Saved plot to ./chart/Regression_6400.png
+2025-04-20 14:25:37,291 - src.utils.logger - INFO - Pipeline completed successfully

@@ -1,6 +1,8 @@
-TensorFlow
-Netmiko
+tensorflow
 pandas
+numpy
 scikit-learn
-matplotlib
 imblearn
+netmiko
+matplotlib
+pyyaml

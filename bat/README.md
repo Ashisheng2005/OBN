@@ -26,17 +26,27 @@ pip install -r requirements.txt
 
 回归模型采用R2评分。
 
-模型训练的结果将会保存在./chart目录中，
+模型训练的结果将会保存在./chart目录中，一下是不同数量的训练结果(前者为分类模型，后者为回归模型，共三个数量级测试)：
+
+**100数量级**
+
+![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Classification_100.png)
+
+![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Regression_100.png)
+
+**1000数量级**
+
+![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Classification_1000.png)
+
+![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Regression_1000.png)
 
 **8000数量级**
 
-![Classification_8000](https://github.com/Ashisheng2005/OBN/blob/main/chart/Classification_12514.png)
+![Classification_8000](https://github.com/Ashisheng2005/OBN/blob/main/chart/Classification_8000.png)
 
-![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Packet_Loss_Boxplot.png)
+![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Regression_8000.png)
 
-![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Packet_Loss_Distribution.png)
 
-![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Regression_6400.png)
 
 训练数据通过ospf和bgp结果通过算法模拟生成，如果想要更加接近现实可添加更复杂的数据。
 
@@ -98,7 +108,7 @@ Neighbor ID     Pri   State           Dead Time   Address         Interface
 在开始训练模型之前需要进行一些必要的配置，训练模型的文件为
 
 ```bash
-.\main.py
+.\Training_model.py
 ```
 
 
@@ -115,22 +125,29 @@ Neighbor ID     Pri   State           Dead Time   Address         Interface
 
 当设置模式为真实后，会启动脚本自动连接交换机，所以你需要正确配置链接信息：
 
-```yaml
-# ./config.yaml
-  real:
-    devices:
-      - device_type: "cisco_ios"
-        host: "192.168.1.1"
-        username: "admin"
-        password: "password"
-      - device_type: "huawei"
-        host: "router2"
-        username: "admin"
-        password: "password"
+```json
+# ./config.json
+"real": {
+        "device": [
+            {
+                "device_type": "cisco_ios",
+                "host": "192.168.1.1",
+                "username": "admin",
+                "password": "password"
+            },
+            {
+                "device_type": "huawei",
+                "host": "router2",
+                "username": "admin",
+                "password": "password"
+            }
+        ],
+    	......
+    },
 
 ```
 
-device中包含多台设备的配置，支持多设备批量获取数据。
+device中的每个哈希表都是一台设备的配置，支持多设备批量获取数据。
 
 
 
@@ -142,58 +159,31 @@ device中包含多台设备的配置，支持多设备批量获取数据。
 
 **调整配置文件**
 
-```yaml
+```json
 # ./config.json
 ...
-data_collection:
-  mode: "virtual"			# 模式
-  virtual:
-    num_samples: 5000		# 数据集大小
-    congestion_lambda: 2	# 链路拥堵系数λ的大小
-    packet_loss_scale: 2	# 数据包丢包规模
-    edge_case_prob: 0.1		# 边缘概率
-    ospf_data_path: "./data/ospf_data.txt"	# ospf数据文件路径
-    bgp_data_path: "./data/bgp_data.txt"	# bgp数据文件路径
+
+    "Classification_model": {
+        "epochs": 500	# 分类模型训练步数
+    },
+    "Regression_model": {
+        "epochs": 500	# 回归模型训练步数
+    },
 ...
+"virtual": {
+        "num_samples": 8000		# 虚拟环境生成的数据集大小
+    }
+
 ```
 
 实际训练中可能跑不到设定的步数，因为模型为了防止过拟合引入了**早停**机制。
-
-```yaml
-# ./config.json
-...
-
-model:
-  classification:
-    epochs: 200			# 分类模型最大步数
-    batch_size: 128		# 批大小
-    capacity_unit:		# 不同层的单元大小
-      large: 512
-      medium: 256
-      small: 128
-  regression:			# 回归模型设置，同上
-    epochs: 200
-    batch_size: 128
-    capacity_unit:
-      large: 512
-      medium: 256
-      small: 128
-
-logging:					# 日志设置
-  level: "INFO"
-  file: "./logs/app.log"	# 日志保存位置
-
-output:
-  model_dir: "./model/"		# 模型保存位置
-  plot_dir: "./chart/"		# 结果图保存位置
-```
 
 
 
 配置文件修改完成后即可启动训练文件：
 
 ```bash
-python main.py
+python Training_model.py
 ```
 
 
@@ -216,20 +206,13 @@ batch_size = 32 if data_size < 1000 else 64 if data_size < 5000 else 128
 
 数据问题：
 
-1. 目前特征集包括了（' as_path_length ', ' local_pref ', ' ospf_state ', ' bandwidth ', ' latency ', ' packet_loss ', ' bandwidth_utilization '），但实际指标远不止这些，可以进行扩展以捕获更多的网络动态，例如：抖动、往返长度（RTT）、路由器的CPU/内存利用率或队列长度等等。（**已实现**）
+1. 特征集包括了（' as_path_length ', ' local_pref ', ' ospf_state ', ' bandwidth ', ' latency ', ' packet_loss ', ' bandwidth_utilization '），但实际指标远不止这些，可以进行扩展以捕获更多的网络动态，例如：抖动、往返长度（RTT）、路由器的CPU/内存利用率或队列长度等等。
+
 2. 时态特征：可以从上次ospf状态变化或BGP如有更新到现在的时间来捕获网络稳定性。
-3. 派生特征：计算路径稳定性（路由振荡频率）或归一化指标（延迟/带宽的比率）等特征来丰富数据集（**已实现**）
-4. 分类编码：对于分类变量，例如“接口”类型，使用单热编码或目标编码，而不是完全依赖于模拟带宽值。目前接口类型的信息完全通过带宽值间接表示，丢失了接口类型的固有类别特性，可能导致模型无法直接捕获接口类型之间的非线性差异。将 interface 转换为三个二进制列（is_FastEthernet, is_GigabitEthernet, is_TenGigabitEthernet），每列表示是否为对应接口类型（1 或 0）。用目标变量（is_best）的统计信息（例如均值）替换接口类型，例如将 FastEthernet 替换为 is_best 在 FastEthernet 样本中的平均值。（**已实现**）
-   1. 单热编码的优点：单热编码直接表示接口类型，避免通过带宽值间接推导。例如，FastEthernet 和 GigabitEthernet 之间的差异不仅是带宽（100 vs 1000 Mbps），还可能涉及硬件特性、稳定性等隐含因素，单热编码能保留这些类别特性。其次对于非线性模型（如决策树、神经网络），单热编码允许模型学习每种接口类型的独特模式，而不假设带宽的线性关系。
-   2. 单热编码允许模型独立学习每种接口类型对 is_best 的贡献，而无需假设带宽值完全代表接口性能。例如，TenGigabitEthernet 可能因高带宽通常有高 is_best 概率，但单热编码允许模型发现例外情况（如高带宽但高延迟的路径）。后续使用分类模型（如随机森林、XGBoost）预测 is_best，单热编码是标准做法，能直接输入到模型中，无需额外归一化。
-   3. 缺点：单热编码将为每种接口类型添加一列，当前有 3 种接口类型，会增加 2-3 列（取决于是否丢弃一列以避免多重共线性）。对于 较大的数据集影响不大，但如果接口类型增加（如添加更多接口），维度可能显著膨胀。维度增加可能导致模型训练时间变长，尤其对于线性模型（如逻辑回归）或深度学习模型的影响会更加显著。
-   4. 带宽值已经部分捕获了接口类型的特性（FastEthernet=100, GigabitEthernet=1000, TenGigabitEthernet=10000），单热编码可能引入冗余信息，增加模型过拟合风险。但可以通过特征选择或正则化（如 L1/L2 正则）减少冗余。
-   5. 如果完全移除带宽值，仅使用单热编码，模型将丢失带宽的连续性信息（如 100 Mbps 和 1000 Mbps 的量级差异），可能降低模型对路径性能的敏感性。所以选择保留带宽，结合单热编码使用。
-5. 在生成的模拟数据中，合成数据可能无法完全代表现实世界的场景，但可以使用**统计分布**来更现实的模拟拥塞和数据包丢失，或者**基于现实网络拓扑**模拟数据，以考虑多跳依赖关系和路由循环。而对于**数据增强**方面，可以引入噪声或者扰动来模拟边缘情况（例如：链路故障，突然流量峰值等）。（**已实现**）
-   1. 具体决策：统计分布 + 数据增强，对于拓扑模拟方案，缺点是实现复杂、数据需求高、计算成本大且需要真实拓扑数据或者需建模模拟多跳。列入后续更新考虑，但暂时放弃实现该方案。
-   2. 使用**泊松分布**（拥塞）和**指数分布**（丢包）优化现有特征生成，添加边缘情况（流量峰值、多链路故障），确保模型学习到罕见场景。
-   3. 在非拥塞场景下，添加微小噪声（如 0-0.5 的丢包率），模拟现实网络中即使无拥塞也可能存在的微小丢包。
-6. 对于训练时进行的SMOTE过采样，虽然解决了is_best的类不平衡问题，但也可能引入人工合成痕迹。为解决这个问题，后续我们会通过替代技术尝试其他不平衡处理方法，例如**类加权损失函数**或对**多数类进行欠采样**。**阈值调整**也是一种不错的选择，目前采用固定的is_best阈值的方案并不靠谱，后续会改为使用验证集来动态调整决策边界。汇总方案为将SMOTE与**ADASYN**或**borderline-SMOTE**等其他技术相结合，以生成更强大的合成样本。
+3. 派生特征：计算路径稳定性（路由振荡频率）或归一化指标（延迟/带宽的比率）等特征来丰富数据集
+4. 分类编码：对于分类变量，例如“接口”类型，使用单热编码或目标编码，而不是依赖于模拟带宽值。
+5. 在生成的模拟数据中，合成数据可能无法完全代表现实世界的场景，但可以使用统计分布来更现实的模拟拥塞和数据包丢失，或者基于现实网络拓扑模拟数据，以考虑多跳依赖关系和路由循环。而对于数据增强方面，可以引入噪声或者扰动来模拟边缘情况（例如：链路故障，突然流量峰值等）。
+6. 对于训练时进行的SMOTE过采样，虽然解决了is_best的类不平衡问题，但也可能引入人工合成痕迹。为解决这个问题，后续我们会通过替代技术尝试其他不平衡处理方法，例如类加权损失函数或对多数类进行欠采样。阈值调整也是一种不错的选择，目前采用固定的is_best阈值的方案并不靠谱，后续会改为使用验证集来动态调整决策边界。汇总方案为将SMOTE于ADASYN或borderline-SMOTE等其他技术相结合，以生成更强大的合成样本。
 7. 目前的对于数据有效性的保证是通过基本断言来实现的。但对真实世界的数据没有全面的清理。解决方案一是进行离群检测，通过实现**离群检测**（例如IQR或者孤立森林算法）来过滤’延迟‘、'pack_loss'或'带宽'中的异常值。而对于部分数据可能存在的数据缺失所造成的ospf/bgp数据不完整。后续需要补充额外的缺失值处理函数。对于特征关联分析，可以使用关联矩阵或互信息评分来识别冗余特征，降低维数。
 
 模型架构问题

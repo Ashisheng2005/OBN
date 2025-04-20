@@ -1,0 +1,43 @@
+data_collection:
+  mode: "virtual"
+  virtual:
+    num_samples: 8000
+    congestion_lambda: 2
+    packet_loss_scale: 0.6
+    edge_case_prob: 0.15
+    ospf_data_path: "./data/ospf_data.txt"
+    bgp_data_path: "./data/bgp_data.txt"
+  real:
+    devices:
+      - device_type: "cisco_ios"
+        host: "192.168.1.1"
+        username: "admin"
+        password: "password"
+      - device_type: "huawei"
+        host: "router2"
+        username: "admin"
+        password: "password"
+
+model:
+  classification:
+    epochs: 200
+    batch_size: 128
+    capacity_unit:
+      large: 512
+      medium: 256
+      small: 128
+  regression:
+    epochs: 200
+    batch_size: 128
+    capacity_unit:
+      large: 512
+      medium: 256
+      small: 128
+
+logging:
+  level: "INFO"
+  file: "./logs/app.log"
+
+output:
+  model_dir: "./model/"
+  plot_dir: "./chart/"
