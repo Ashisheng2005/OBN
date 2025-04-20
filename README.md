@@ -30,13 +30,15 @@ pip install -r requirements.txt
 
 **8000数量级**
 
-![Classification_8000](https://github.com/Ashisheng2005/OBN/blob/main/chart/Classification_12514.png)
+![Classification_8000](https://github.com/Ashisheng2005/OBN/blob/main/Classification_20316.png)
+
+![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Classification_pr_roc.png)
 
 ![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Packet_Loss_Boxplot.png)
 
 ![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Packet_Loss_Distribution.png)
 
-![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Regression_6400.png)
+![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Regression_12000.png)
 
 训练数据通过ospf和bgp结果通过算法模拟生成，如果想要更加接近现实可添加更复杂的数据。
 
@@ -230,6 +232,44 @@ batch_size = 32 if data_size < 1000 else 64 if data_size < 5000 else 128
    2. 使用**泊松分布**（拥塞）和**指数分布**（丢包）优化现有特征生成，添加边缘情况（流量峰值、多链路故障），确保模型学习到罕见场景。
    3. 在非拥塞场景下，添加微小噪声（如 0-0.5 的丢包率），模拟现实网络中即使无拥塞也可能存在的微小丢包。
 6. 对于训练时进行的SMOTE过采样，虽然解决了is_best的类不平衡问题，但也可能引入人工合成痕迹。为解决这个问题，后续我们会通过替代技术尝试其他不平衡处理方法，例如**类加权损失函数**或对**多数类进行欠采样**。**阈值调整**也是一种不错的选择，目前采用固定的is_best阈值的方案并不靠谱，后续会改为使用验证集来动态调整决策边界。汇总方案为将SMOTE与**ADASYN**或**borderline-SMOTE**等其他技术相结合，以生成更强大的合成样本。
+   1. ASASYN（Adaptive Synthetic Sampling）
+      1. ADASYN是SMOTE的改进版本，它根据样本的“困难程度”（即少数类样本靠近多数类边界的程度）自适应地生成更多合成样本。相比SMOTE，ADASYN更关注那些难以分类的边界样本，能生成更具代表性的合成样本。可以使用imblearn.over_sampling.ADASYN库，替换现有的SMOTE实现。调整sampling_strategy参数，控制合成样本的比例。可以在simulate_training_data后添加ADASYN处理，确保生成的is_best少数类样本更贴近真实网络场景。
+   2. Borderline-SMOTE
+      1. Borderline-SMOTE只对少数类中靠近决策边界的样本进行过采样，而忽略那些“安全”（远离边界的）样本。这种方法能减少合成样本的冗余，降低人工痕迹。可以使用imblearn.over_sampling.BorderlineSMOTE，设置kind='borderline-1'或borderline-2。在生成df后，针对is_best标签应用该方法，结合您的logger记录合成样本的数量和分布（如is_best的均值、标准差）。但是需要注意检查合成样本的packet_loss、latency等关键特征是否符合真实网络分布。
+   3. SMOTEENN（SMOTE + Edited Nearest Neighbors）
+      1. SMOTEENN结合了过采样和欠采样，先用SMOTE生成少数类样本，再通过Edited Nearest Neighbors（ENN）清理那些与多数类样本过于相似的合成样本。这种方法能有效减少人工痕迹，同时提高样本质量。可以使用imblearn.combine.SMOTEENN，在DataProcessor中，生成df后应用SMOTEENN，确保is_best分布更平衡。通过logger记录清理后的样本数量和特征统计，验证path_cost、route_stability等衍生特征的分布是否合理。
+   4. Random Undersampling
+      1. 随机删除多数类样本，简单高效，但可能丢失重要信息。使用imblearn.under_sampling.RandomUnderSampler，设置sampling_strategy为目标比例（如0.5表示1:1平衡）。在simulate_training_data后，应用欠采样，并通过plotter.plot_edge_cases检查欠采样后packet_loss、jitter等特征的分布是否仍具代表性。记录logger中欠采样前后is_best的比例变化。
+   5. Tomek Links
+      1. Tomek Links识别并移除多数类中靠近少数类的样本，这些样本可能是噪声或冗余的。使用imblearn.under_sampling.TomekLinks。结合SMOTE或ADASYN，先过采样少数类，再用Tomek Links清理边界样本。验证latency_bandwidth_ratio、path_cost等衍生特征的分布，确保欠采样后数据仍能反映网络的拥塞和故障场景。
+   6. Cluster Centroids
+      1. 通过将多数类样本聚类并替换为质心，减少多数类样本量，同时保留分布特性。使用imblearn.under_sampling.ClusterCentroids。针对is_best=0的样本，基于bandwidth、latency等关键特征进行聚类。检查route_stability和queue_length的统计信息，确保质心样本能代表网络动态。
+   7. 类加权损失函数
+      1. 通过在模型训练时为少数类（is_best=1）分配更高的权重，可以在不改变数据集的情况下解决类不平衡问题。这种方法避免了合成样本和数据丢失的风险，很适合网络数据特征复杂、真实性要求高的场景。
+      2. 在模型训练时（假设使用如XGBoost、LightGBM或神经网络），设置class_weight参数。例如，在sklearn中可设置class_weight='balanced'，或手动指定权重（如{0:1, 1:5}，根据is_best分布调整）。
+      3. 结合现有的is_best动态阈值逻辑，计算训练集中is_best=1和is_best=0的比例，动态设置权重。
+      4. 在logger中记录加权后的损失值，验证模型对少数类的预测性能（如F1分数、PR-AUC）。
+      5. 需要注意的是：类加权可能导致模型对多数类欠拟合，需通过交叉验证监控is_best=0的性能。
+   8. 动态阈值调整
+      1. 基于验证集的阈值优化
+         1. 使用验证集的PR曲线（Precision-Recall Curve）或ROC曲线，动态选择最优阈值。
+         2. 在simulate_training_data后，将df拆分为训练集和验证集，使用sklearn.metrics.precision_recall_curve计算不同阈值的精确率和召回率，选择F1分数最高的阈值。在logger中记录最优阈值及其对应的性能指标（如F1、AUC），定期更新阈值，适应bandwidth_utilization、route_stability等特征的分布变化。
+      2. 基于特征的阈值调整
+         1. 考虑bandwidth、latency等关键特征的影响，动态调整is_best的阈值。例如，在高拥塞场景（bandwidth_utilization>80%）下降低阈值，以增加is_best=1的比例。
+         2. 在is_best评分逻辑中，添加基于bandwidth_utilization或queue_length的权重调整。通过plotter.plot_edge_cases验证调整后is_best分布是否更合理。
+   9. 基于物理约束的生成模型
+      1. 目前simulate_training_data方法已经通过物理约束（如bandwidth、latency的分布）生成逼真的网络数据。针对类不平衡问题，可以进一步引入生成模型（如GAN或VAE）生成少数类样本，同时确保样本符合网络物理特性。
+      2. 条件GAN（Conditional GAN）：训练一个条件GAN，输入is_best=1的条件，生成符合bandwidth、packet_loss等特征分布的样本。使用PyTorch或TensorFlow实现条件GAN，输入特征包括is_FastEthernet、is_GigabitEthernet等，约束生成样本的path_cost和route_stability分布，参考simulate_training_data中的逻辑，最后通过plotter.plot_edge_boxplot比较生成样本与真实样本的分布。
+      3. 变分自编码器（VAE）：VAE可以学习少数类样本的潜在分布，生成更自然的样本。针对is_best=1的样本训练VAE，可以选择重点建模latency、jitter等关键特征。并且在生成样本时，添加后处理步骤（如裁剪packet_loss到0-50），确保物理合理性。
+   10. 验证和监控
+       1. 每次对于任何方面的改动都需要进行多种验证和监控
+       2. 分布一致性检查：比较处理前后packet_loss、route_stability等特征的分布，使用KS检验或KL散度。使用scipy.stats.ks_2samp检查合成样本与原始样本的分布差异且在logger中记录检验结果。
+       3. 模型性能监控：使用多种指标（如F1、PR-AUC、ROC-AUC）评估模型在is_best上的性能，尤其关注边缘案例（高packet_loss或queue_length）。在plotter中添加PR曲线和ROC曲线的绘制功能且记录不同策略（如SMOTE vs. ADASYN vs. 类加权）的性能对比
+   11. 策略优先级
+       1. **尝试ADASYN + Tomek Links**：ADASYN生成更高质量的少数类样本，Tomek Links清理冗余样本，减少人工痕迹。
+       2. **结合类加权损失函数**：在模型训练时为is_best=1分配更高权重，弥补数据分布的不足。
+       3. **动态阈值调整**：基于验证集的PR曲线优化is_best阈值，适应不同网络场景。
+       4. **监控分布和性能**：通过logger和plotter持续验证特征分布和模型性能。
 7. 目前的对于数据有效性的保证是通过基本断言来实现的。但对真实世界的数据没有全面的清理。解决方案一是进行离群检测，通过实现**离群检测**（例如IQR或者孤立森林算法）来过滤’延迟‘、'pack_loss'或'带宽'中的异常值。而对于部分数据可能存在的数据缺失所造成的ospf/bgp数据不完整。后续需要补充额外的缺失值处理函数。对于特征关联分析，可以使用关联矩阵或互信息评分来识别冗余特征，降低维数。
 
 模型架构问题

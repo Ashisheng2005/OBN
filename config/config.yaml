@@ -1,7 +1,7 @@
 data_collection:
   mode: "virtual"
   virtual:
-    num_samples: 8000
+    num_samples: 20000
     congestion_lambda: 2
     packet_loss_scale: 0.6
     edge_case_prob: 0.15

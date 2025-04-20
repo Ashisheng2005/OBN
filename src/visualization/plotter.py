@@ -8,6 +8,8 @@
 
 import matplotlib.pyplot as plt
 import os
+import numpy as np
+from sklearn.metrics import precision_recall_curve, roc_curve
 from src.utils.config import Config
 from src.utils.logger import setup_logger
 
@@ -34,6 +36,33 @@ class Plotter:
         # plt.show()
         plt.savefig(f"{self.plot_dir}Packet_Loss_Distribution.png")
         plt.close()
+
+    def plot_pr_roc(self, y_true, y_pred_proba, model_type):
+        plt.figure(figsize=(12, 4))
+
+        # PR 曲线
+        precisions, recalls, _ = precision_recall_curve(y_true, y_pred_proba)
+        pr_auc = np.trapz(recalls, precisions)
+        plt.subplot(1, 2, 1)
+        plt.plot(recalls, precisions, label=f'PR-AUC={pr_auc:.4f}')
+        plt.title(f'{model_type} PR Curve')
+        plt.xlabel('Recall')
+        plt.ylabel('Precision')
+        plt.legend()
+
+        # ROC 曲线
+        fpr, tpr, _ = roc_curve(y_true, y_pred_proba)
+        roc_auc = np.trapz(tpr, fpr)
+        plt.subplot(1, 2, 2)
+        plt.plot(fpr, tpr, label=f'ROC-AUC={roc_auc:.4f}')
+        plt.title(f'{model_type} ROC Curve')
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.legend()
+
+        plt.savefig(f"{self.plot_dir}{model_type}_pr_roc.png")
+        plt.close()
+        self.logger.info(f"Saved PR/ROC plot to {self.plot_dir}{model_type}_pr_roc.png")
 
     def plot_edge_boxplot(self, df):
         plt.figure(figsize=(10, 6))

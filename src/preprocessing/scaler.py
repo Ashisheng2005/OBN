@@ -6,6 +6,10 @@
 # @File : scaler.py
 # @desc : README.md
 
+"""
+管理数据标准化，分别处理分类和回归任务的特征和目标。
+"""
+
 from sklearn.preprocessing import StandardScaler
 from joblib import dump
 from src.utils.config import Config

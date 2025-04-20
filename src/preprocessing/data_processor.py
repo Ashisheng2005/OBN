@@ -6,9 +6,15 @@
 # @File : data_processor.py
 # @desc : README.md
 
+"""
+生成模拟训练数据，包含网络特征（如latency、packet_loss、bandwidth等）以及目标变量is_best（分类）和path_cost（回归）。
+is_best基于固定阈值（0.5 ± 0.05）生成，存在类不平衡问题。
+"""
+
 import pandas as pd
 import numpy as np
 import random
+from scipy.stats import ks_2samp
 from src.utils.config import Config
 from src.utils.logger import setup_logger
 from src.visualization.plotter import Plotter
@@ -280,7 +286,8 @@ class DataProcessor:
                     0.03 * training_data["is_TenGigabitEthernet"][-1]  # 更高带宽接口贡献更大
             )
 
-            is_best = 1 if score > 0.5 + random.uniform(-0.05, 0.05) else 0  # 降低阈值
+            threshold = 0.5 - 0.1 * (bandwidth_utilization / 100)  # 高拥塞降低阈值
+            is_best = 1 if score > threshold else 0                 # 动态阈值
             training_data["is_best"].append(is_best)
 
         # 转换为DataFrame
@@ -325,6 +332,13 @@ class DataProcessor:
         df["resource_usage"] = 0.6 * df["cpu_usage"] + 0.4 * df["memory_usage"]
         df["route_stability_log"] = np.log1p(df["route_stability"])  # 新增
         df["latency_bandwidth_ratio_log"] = np.log1p(df["latency_bandwidth_ratio"])  # 新增
+        df["latency_packet_loss"] = df["latency"] * df["packet_loss"]
+        # 添加对 packet_loss 的对数变换
+        df["packet_loss_log"] = np.log1p(df["packet_loss"])
+        self.logger.info(
+            f"Added packet_loss_log: mean={df['packet_loss_log'].mean():.4f}, std={df['packet_loss_log'].std():.4f}")
+        df["utilization_queue"] = df["bandwidth_utilization"] * df["queue_length"]
+
 
         # 确保 bandwidth 不为 0
         if (df["bandwidth"] <= 0).any():
@@ -361,6 +375,11 @@ class DataProcessor:
                 f"NaN values in path_cost: {df[df['path_cost'].isna()][['bandwidth', 'latency', 'route_stability']]}")
             df = df.dropna()
             self.logger.info(f"After dropping NaN in path_cost: DataFrame shape: {df.shape}")
+
+        corr_is_best = df.corr()['is_best'].drop(['is_best', 'path_cost']).abs().sort_values(ascending=False)
+        corr_path_cost = df.corr()['path_cost'].drop(['is_best', 'path_cost']).abs().sort_values(ascending=False)
+        self.logger.info(f"Feature correlation with is_best:\n{corr_is_best}")
+        self.logger.info(f"Feature correlation with path_cost:\n{corr_path_cost}")
 
         # 日志打印鉴别
         for interface in ['FastEthernet', 'GigabitEthernet', 'TenGigabitEthernet']:
