@@ -54,14 +54,14 @@ class ClassificationModel:
             metrics=['accuracy', tf.keras.metrics.Precision(), tf.keras.metrics.Recall()]
         )
 
-    def train(self, X_train, y_train, X_val, y_val, X_test, y_test):
+    def train(self, X_train, y_train, X_val, y_val, X_test, y_test, class_weights):
         # 获取自定义配置
         epochs = self.config.get_nested('model', 'classification', 'epochs', default=200)
         batch_size = self.config.get_nested('model', 'classification', 'batch_size', default=32)
 
         # 调整类权重，基于原始比例
-        pos_weight = (len(y_train) / np.sum(y_train == 1)) * 0.5  # 原始比例约为16.36，乘以0.5以避免过大
-        class_weights = {0: 1.0, 1: pos_weight}
+        # pos_weight = (len(y_train) / np.sum(y_train == 1)) * 0.5  # 原始比例约为16.36，乘以0.5以避免过大
+        # class_weights = {0: 1.0, 1: pos_weight}
         self.logger.info(f"Class weights: {class_weights}")
 
         # 早停
@@ -88,25 +88,15 @@ class ClassificationModel:
         precisions, recalls, thresholds = precision_recall_curve(y_val, y_val_pred)
         f1_scores = 2 * (precisions * recalls) / (precisions + recalls + 1e-10)
 
-        # 加权 F1 分数，增加对精确率的权重
-        weights = precisions  # 更关注高精确率
-        weighted_f1 = f1_scores * weights / (weights.sum() + 1e-10)
-        optimal_threshold = thresholds[np.argmax(weighted_f1)]
-        self.logger.info(
-            f"Optimal threshold (weighted F1): {optimal_threshold:.4f}, Weighted F1: {np.max(weighted_f1):.4f}")
+        # 更关注少数类的F1分数
+        optimal_idx = np.argmax(f1_scores)
+        optimal_threshold = thresholds[optimal_idx]
+        self.logger.info(f"Optimal threshold (max F1): {optimal_threshold:.4f}, F1: {f1_scores[optimal_idx]:.4f}")
 
+        # 评估测试集
         y_test_pred = (self.model.predict(X_test) >= optimal_threshold).astype(int)
         accuracy = np.mean(y_test_pred == y_test)
         self.logger.info(f"Test Accuracy with optimal threshold: {accuracy:.4f}")
-
-        # 单独评估正类
-        # pos_mask = y_test == 1
-        # if pos_mask.sum() > 0:
-        #     pos_precision = precision_score(y_test[pos_mask], y_test_pred[pos_mask])
-        #     pos_recall = recall_score(y_test[pos_mask], y_test_pred[pos_mask])
-        #     pos_f1 = f1_score(y_test[pos_mask], y_test_pred[pos_mask])
-        #     self.logger.info(
-        #         f"Positive class (is_best=1): Precision={pos_precision:.4f}, Recall={pos_recall:.4f}, F1={pos_f1:.4f}")
 
         return history, accuracy
 

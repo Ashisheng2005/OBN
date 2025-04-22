@@ -14,7 +14,8 @@ is_best基于固定阈值（0.5 ± 0.05）生成，存在类不平衡问题。
 import pandas as pd
 import numpy as np
 import random
-from scipy.stats import ks_2samp
+from sklearn.ensemble import IsolationForest
+
 from src.utils.config import Config
 from src.utils.logger import setup_logger
 from src.visualization.plotter import Plotter
@@ -32,6 +33,65 @@ class DataProcessor:
             "TenGigabitEthernet": 10000,
             "FastEthernet": 100
         }
+
+    def detect_outliers_iqr(self, df, column, multiplier=2.0):
+        """IQR（四分位距法）,IQR方法适用于单变量离群检测，适合latency、packet_loss和bandwidth等特征。"""
+
+        Q1 = df[column].quantile(0.25)
+        Q3 = df[column].quantile(0.75)
+        IQR = Q3 - Q1
+        lower_bound = Q1 - multiplier * IQR
+        upper_bound = Q3 + multiplier * IQR
+        outliers = df[(df[column] < lower_bound) | (df[column] > upper_bound)]
+        self.logger.info(f"Outliers in {column}: {len(outliers)} samples")
+        return df[(df[column] >= lower_bound) & (df[column] <= upper_bound)], outliers
+
+    def detect_outliers_isolation_forest(self, df, features, contamination=0.05):
+        """孤立森林适合多变量离群检测，可以同时考虑多个特征（如latency、packet_loss、bandwidth）之间的关系。"""
+
+        iso_forest = IsolationForest(contamination=contamination, random_state=42)
+        X = df[features].values
+        outlier_labels = iso_forest.fit_predict(X)
+        outliers = df[outlier_labels == -1]
+        self.logger.info(f"Outliers detected by Isolation Forest: {len(outliers)} samples")
+        return df[outlier_labels != -1], outliers
+
+    def handle_missing_values(self, df):
+        """
+        基于特征分布的填补
+        对于数值特征（如latency、packet_loss），可以用中位数或均值填补。
+        对于分类特征（如ospf_state），可以用众数填补。
+        对于OSPF/BGP数据不完整（如as_path_length缺失），可以根据接口类型推断。
+        """
+
+        # 数值特征填补
+        for col in ['latency', 'packet_loss', 'bandwidth', 'rtt', 'jitter']:
+            if df[col].isna().sum() > 0:
+                median_value = df[col].median()
+                df[col].fillna(median_value, inplace=True)
+                self.logger.info(f"Filled missing values in {col} with median: {median_value}")
+
+        # 分类特征填补
+        for col in ['ospf_state', 'is_FastEthernet', 'is_GigabitEthernet', 'is_TenGigabitEthernet']:
+            if df[col].isna().sum() > 0:
+                mode_value = df[col].mode()[0]
+                df[col].fillna(mode_value, inplace=True)
+                self.logger.info(f"Filled missing values in {col} with mode: {mode_value}")
+
+        # 基于接口类型推断 as_path_length
+        if df['as_path_length'].isna().sum() > 0:
+            for idx, row in df[df['as_path_length'].isna()].iterrows():
+                if row['is_TenGigabitEthernet'] == 1:
+                    df.at[idx, 'as_path_length'] = df[df['is_TenGigabitEthernet'] == 1]['as_path_length'].mean()
+                elif row['is_GigabitEthernet'] == 1:
+                    df.at[idx, 'as_path_length'] = df[df['is_GigabitEthernet'] == 1]['as_path_length'].mean()
+                else:
+                    df.at[idx, 'as_path_length'] = df[df['is_FastEthernet'] == 1]['as_path_length'].mean()
+            self.logger.info("Filled missing values in as_path_length based on interface type")
+
+        return df
+
+
 
     def simulate_training_data(self, ospf_data, bgp_data):
         """模拟训练数据集"""
@@ -368,6 +428,28 @@ class DataProcessor:
 
         self.logger.info("path_cost column created successfully")
         self.logger.info(f"path_cost head: {df['path_cost'].head()}")
+
+        # 先填补不完整数据
+        df = self.handle_missing_values(df)
+
+        # 结合两种方法，先用IQR过滤明显的单变量异常值(如packet_loss超过50的样本),再用孤立森林检测多变量异常（如latency和packet_loss同时异常）
+
+
+        # df = self.detect_outliers_iqr(df, 'packet_loss')
+        # df = self.detect_outliers_iqr(df, 'latency')
+        # df = self.detect_outliers_iqr(df, 'bandwidth')
+
+        # IQR
+        df, outliers_iqr = self.detect_outliers_iqr(df, 'packet_loss', multiplier=2.0)
+        # 孤立森林
+        df, outliers_iso = self.detect_outliers_isolation_forest(df, ['latency', 'packet_loss', 'bandwidth'],
+                                                                 contamination=0.05)
+
+        outliers_combined = pd.concat([outliers_iqr, outliers_iso]).drop_duplicates()
+        self.logger.info(f"Outliers summary:\n{outliers_combined.describe()}")
+
+        # features_to_check = ['latency', 'packet_loss', 'bandwidth']
+        # df = self.detect_outliers_isolation_forest(df, features_to_check)
 
         # 检查 path_cost 是否包含 NaN
         if df["path_cost"].isna().any():

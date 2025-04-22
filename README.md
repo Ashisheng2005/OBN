@@ -28,17 +28,19 @@ pip install -r requirements.txt
 
 模型训练的结果将会保存在./chart目录中，
 
+ROC曲线（真阳性率-假阳性率）
+
 **8000数量级**
 
-![](https://github.com/Ashisheng2005/OBN/blob/main/Classification_20316.png)
+![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Classification_17077.png)
 
-![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Classification_pr_roc.png)
+![PR曲线（精确率-召回率）](https://github.com/Ashisheng2005/OBN/blob/main/chart/Classification_pr_roc.png)
 
 ![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Packet_Loss_Boxplot.png)
 
 ![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Packet_Loss_Distribution.png)
 
-![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Regression_12000.png)
+![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Regression_10134.png)
 
 训练数据通过ospf和bgp结果通过算法模拟生成，如果想要更加接近现实可添加更复杂的数据。
 
@@ -198,18 +200,6 @@ output:
 python main.py
 ```
 
-
-
-复杂环境设置：
-
-模型实习了动态批量大小，根据数据量动态调整batch_size大小（小数据量用小批量，大数据量用大批量）
-
-```python
-batch_size = 32 if data_size < 1000 else 64 if data_size < 5000 else 128
-```
-
-在训练文件**Training_model.py**中，分类模型和回归模型**都存在各自的语句**，可根据实际需求修改：
-
 # 更新内容
 
 
@@ -231,7 +221,7 @@ batch_size = 32 if data_size < 1000 else 64 if data_size < 5000 else 128
    1. 具体决策：统计分布 + 数据增强，对于拓扑模拟方案，缺点是实现复杂、数据需求高、计算成本大且需要真实拓扑数据或者需建模模拟多跳。列入后续更新考虑，但暂时放弃实现该方案。
    2. 使用**泊松分布**（拥塞）和**指数分布**（丢包）优化现有特征生成，添加边缘情况（流量峰值、多链路故障），确保模型学习到罕见场景。
    3. 在非拥塞场景下，添加微小噪声（如 0-0.5 的丢包率），模拟现实网络中即使无拥塞也可能存在的微小丢包。
-6. 对于训练时进行的SMOTE过采样，虽然解决了is_best的类不平衡问题，但也可能引入人工合成痕迹。为解决这个问题，后续我们会通过替代技术尝试其他不平衡处理方法，例如**类加权损失函数**或对**多数类进行欠采样**。**阈值调整**也是一种不错的选择，目前采用固定的is_best阈值的方案并不靠谱，后续会改为使用验证集来动态调整决策边界。汇总方案为将SMOTE与**ADASYN**或**borderline-SMOTE**等其他技术相结合，以生成更强大的合成样本。
+6. 对于训练时进行的SMOTE过采样，虽然解决了is_best的类不平衡问题，但也可能引入人工合成痕迹。为解决这个问题，后续我们会通过替代技术尝试其他不平衡处理方法，例如**类加权损失函数**或对**多数类进行欠采样**。**阈值调整**也是一种不错的选择，目前采用固定的is_best阈值的方案并不靠谱，后续会改为使用验证集来动态调整决策边界。汇总方案为将SMOTE与**ADASYN**或**borderline-SMOTE**等其他技术相结合，以生成更强大的合成样本。（**已实现**）
    1. ASASYN（Adaptive Synthetic Sampling）
       1. ADASYN是SMOTE的改进版本，它根据样本的“困难程度”（即少数类样本靠近多数类边界的程度）自适应地生成更多合成样本。相比SMOTE，ADASYN更关注那些难以分类的边界样本，能生成更具代表性的合成样本。可以使用imblearn.over_sampling.ADASYN库，替换现有的SMOTE实现。调整sampling_strategy参数，控制合成样本的比例。可以在simulate_training_data后添加ADASYN处理，确保生成的is_best少数类样本更贴近真实网络场景。
    2. Borderline-SMOTE
@@ -270,7 +260,7 @@ batch_size = 32 if data_size < 1000 else 64 if data_size < 5000 else 128
        2. **结合类加权损失函数**：在模型训练时为is_best=1分配更高权重，弥补数据分布的不足。
        3. **动态阈值调整**：基于验证集的PR曲线优化is_best阈值，适应不同网络场景。
        4. **监控分布和性能**：通过logger和plotter持续验证特征分布和模型性能。
-7. 目前的对于数据有效性的保证是通过基本断言来实现的。但对真实世界的数据没有全面的清理。解决方案一是进行离群检测，通过实现**离群检测**（例如IQR或者孤立森林算法）来过滤’延迟‘、'pack_loss'或'带宽'中的异常值。而对于部分数据可能存在的数据缺失所造成的ospf/bgp数据不完整。后续需要补充额外的缺失值处理函数。对于特征关联分析，可以使用关联矩阵或互信息评分来识别冗余特征，降低维数。
+7. 目前的对于数据有效性的保证是通过基本断言来实现的。但对真实世界的数据没有全面的清理。解决方案一是进行离群检测，通过实现**离群检测**（例如IQR或者孤立森林算法）来过滤’延迟‘、'pack_loss'或'带宽'中的异常值。而对于部分数据可能存在的数据缺失所造成的ospf/bgp数据不完整。后续需要补充额外的缺失值处理函数。对于特征关联分析，可以使用关联矩阵或互信息评分来识别冗余特征，降低维数。（**已实现**）
 
 模型架构问题
 

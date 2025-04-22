@@ -9,22 +9,26 @@
 """
 协调分类和回归模型的训练，使用SMOTE处理is_best的类不平衡，标准化数据并调用模型训练。
 """
-import tensorflow as tf
-from sklearn.model_selection import train_test_split
-from imblearn.over_sampling import BorderlineSMOTE
-from imblearn.over_sampling import SMOTE
-from imblearn.over_sampling import ADASYN
-from imblearn.combine import SMOTEENN
-from imblearn.under_sampling import TomekLinks
-from scipy.stats import ks_2samp
 
 import numpy as np
+import pandas as pd
+import tensorflow as tf
+from scipy.stats import ks_2samp
+from sklearn.decomposition import PCA
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from sklearn.model_selection import train_test_split
+
+from sklearn.feature_selection import mutual_info_classif, mutual_info_regression
+from imblearn.over_sampling import ADASYN
+from imblearn.under_sampling import TomekLinks
+from imblearn.over_sampling import BorderlineSMOTE
+
 from src.utils.config import Config
 from src.utils.logger import setup_logger
-from src.preprocessing.scaler import DataScaler
-from src.modeling.classification import ClassificationModel
-from src.modeling.regression import RegressionModel
 from src.visualization.plotter import Plotter
+from src.preprocessing.scaler import DataScaler
+from src.modeling.regression import RegressionModel
+from src.modeling.classification import ClassificationModel
 
 
 class Trainer:
@@ -36,12 +40,55 @@ class Trainer:
         self.data = data
         self.plotter = Plotter(config)
 
+    def apply_pca(self, X, n_components=0.95):
+        """使用PCA进一步降维"""
+
+        pca = PCA(n_components=n_components)
+        X_pca = pca.fit_transform(X)
+        self.logger.info(f"PCA explained variance ratio: {pca.explained_variance_ratio_}")
+        return X_pca
+
+    def select_features_mutual_info(self, X, y, task='classification'):
+        """
+            使用互信息评分降低维数,目前的特征选择基于相关性阈值（corr > 0.1），但这可能忽略非线性关系。
+        使用互信息评分（Mutual Information）来识别冗余特征，并结合主成分分析（PCA）降低维数。
+        """
+
+        # 互信息评分
+        if task == 'classification':
+            mi = mutual_info_classif(X, y, random_state=42)
+        else:
+            mi = mutual_info_regression(X, y, random_state=42)
+        mi_scores = pd.Series(mi, index=X.columns)
+
+        # 根据任务类型选择随机森林模型
+        if task == 'classification':
+            rf = RandomForestClassifier(random_state=42)
+        else:
+            rf = RandomForestRegressor(random_state=42)
+
+        rf.fit(X, y)
+        rf_importances = pd.Series(rf.feature_importances_, index=X.columns)
+
+        # 综合评分
+        combined_scores = 0.5 * mi_scores + 0.5 * rf_importances
+        self.logger.info(f"Combined feature scores:\n{combined_scores.sort_values(ascending=False)}")
+
+        # 选择综合得分较高的特征
+        selected_features = combined_scores[combined_scores > 0.05].index.tolist()
+        self.logger.info(f"Selected features: {selected_features}")
+        return selected_features
+
     def prepare_classification_data(self):
         """分类模型使用的数据标签,分类模型（输出 sigmoid）无法处理非0/1的标签"""
 
         # 计算相关性并筛选特征
+        # 使用互信息评分
         corr = self.data.corr()['is_best'].drop(['is_best', 'path_cost']).abs()
-        selected_features = corr[corr > 0.1].index.tolist()  # 筛选相关性>0.1的特征
+        mi_rf_selected_features = self.select_features_mutual_info(self.data.drop(['is_best', 'path_cost'], axis=1),
+                                                                self.data['is_best'], task='classification')
+        selected_features = list(set(corr[corr > 0.1].index.tolist()) | set(mi_rf_selected_features))  # 取并集
+
         self.logger.info(f"Selected features for classification: {selected_features}")
         X = self.data[selected_features].values
         y = self.data["is_best"].values
@@ -60,13 +107,18 @@ class Trainer:
         X_val, y_val = scaler.transform(X_val, y_val)
         X_test, y_test = scaler.transform(X_test, y_test)
 
-        # 使用 Borderline-SMOTE 过采样
-        sampler = BorderlineSMOTE(random_state=42, sampling_strategy=0.8, kind='borderline-1')
+        # 使用ADASYN代替Borderline-SMOTE
+        sampler = ADASYN(random_state=42, sampling_strategy=0.8)
         X_train_resampled, y_train_resampled = sampler.fit_resample(X_train, y_train)
 
         # 再使用 TomekLinks 欠采样
         tomek = TomekLinks()
         X_train_final, y_train_final = tomek.fit_resample(X_train_resampled, y_train_resampled)
+
+        # 调整类权重
+        pos_weight = (len(y_train_final) / np.sum(y_train_final == 1)) * 0.7  # 增加正样本权重
+        class_weights = {0: 1.0, 1: pos_weight}
+        self.logger.info(f"Updated class weights: {class_weights}")
 
         # 验证合成样本分布
         # feature_names = self.data.drop(["is_best", "path_cost"], axis=1).columns
@@ -77,7 +129,9 @@ class Trainer:
         scaler.save('classification')
         self.logger.info(
             f"Classification data: y_train distribution: {np.unique(y_train_final, return_counts=True)}")
-        return X_train_final, X_val, X_test, y_train_final, y_val, y_test
+        # return X_train_final, X_val, X_test, y_train_final, y_val, y_test
+
+        return X_train_final, X_val, X_test, y_train_final, y_val, y_test, class_weights
 
     def prepare_regression_data(self):
         """回归模型数据，使用path_cost作为目标"""
@@ -89,8 +143,12 @@ class Trainer:
         data_clean = self.data.dropna(subset=["is_best", "path_cost"])
         self.logger.info(f"After dropping NaN: Data shape={data_clean.shape}")
 
+        # 使用互信息评分
         corr = data_clean.corr()['path_cost'].drop(['is_best', 'path_cost']).abs()
-        selected_features = corr[corr > 0.1].index.tolist()
+        mi_selected_features = self.select_features_mutual_info(data_clean.drop(['is_best', 'path_cost'], axis=1),
+                                                                data_clean['path_cost'], task='regression')
+        selected_features = list(set(corr[corr > 0.1].index.tolist()) & set(mi_selected_features))
+
         self.logger.info(f"Selected features for regression: {selected_features}")
         X = data_clean[selected_features].values
         y = data_clean["path_cost"].values
@@ -135,9 +193,9 @@ class Trainer:
         # Classification
         try:
             self.logger.info("Training classification model")
-            X_train, X_val, X_test, y_train, y_val, y_test = self.prepare_classification_data()
+            X_train, X_val, X_test, y_train, y_val, y_test, class_weights = self.prepare_classification_data()
             model = ClassificationModel(self.config, X_train.shape)
-            history, accuracy = model.train(X_train, y_train, X_val, y_val, X_test, y_test)
+            history, accuracy = model.train(X_train, y_train, X_val, y_val, X_test, y_test, class_weights)
             model.save_model()
 
             # 绘结果图

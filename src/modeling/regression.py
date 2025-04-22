@@ -74,11 +74,14 @@ class RegressionModel:
             self.logger.warning("weights_train is None, using uniform weights.")
             weights_train = np.ones(len(y_train))  # 使用均匀权重
 
+        # 添加噪声鲁棒性：对训练数据添加小幅噪声
+        X_train_noisy = X_train + np.random.normal(0, 0.01, X_train.shape)
+
         history = self.model.fit(
-            X_train, y_train,  # 移除 tf.expand_dims
+            X_train_noisy, y_train,
             validation_data=(X_val, y_val),
             epochs=epochs, batch_size=batch_size,
-            sample_weight=weights_train,  # 添加样本权重
+            sample_weight=weights_train,
             callbacks=[early_stopping, lr_scheduler], verbose=1
         )
 
