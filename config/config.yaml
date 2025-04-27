@@ -1,7 +1,7 @@
 data_collection:
   mode: "virtual"
   virtual:
-    num_samples: 13000
+    num_samples: 8000
     congestion_lambda: 2
     packet_loss_scale: 0.6
     edge_case_prob: 0.15
@@ -20,14 +20,14 @@ data_collection:
 
 model:
   classification:
-    epochs: 200
+    epochs: 120
     batch_size: 128
     capacity_unit:
       large: 512
       medium: 256
       small: 128
   regression:
-    epochs: 200
+    epochs: 120
     batch_size: 128
     capacity_unit:
       large: 512

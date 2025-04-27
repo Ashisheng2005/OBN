@@ -5,11 +5,11 @@
 # @Version：V 1.0
 # @File : plotter.py
 # @desc : README.md
-
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import os
-import numpy as np
-from sklearn.metrics import precision_recall_curve, roc_curve
+from sklearn.metrics import precision_recall_curve, roc_curve, auc
 from src.utils.config import Config
 from src.utils.logger import setup_logger
 
@@ -21,6 +21,7 @@ class Plotter:
         self.config = config
         self.logger = setup_logger(config)
         self.plot_dir = self.config.get_nested('output', 'plot_dir', default='./chart/')
+        os.makedirs(self.plot_dir, exist_ok=True)
 
     def plot_edge_cases(self, df):
         plt.figure(figsize=(10, 6))
@@ -38,31 +39,35 @@ class Plotter:
         plt.close()
 
     def plot_pr_roc(self, y_true, y_pred_proba, model_type):
-        plt.figure(figsize=(12, 4))
+        self.logger.info(f"Plotting PR and ROC curves for {model_type}")
+        plt.figure(figsize=(10, 5))
 
-        # PR 曲线
-        precisions, recalls, _ = precision_recall_curve(y_true, y_pred_proba)
-        pr_auc = np.trapz(recalls, precisions)
+        # 绘制 PR 曲线
+        precision, recall, _ = precision_recall_curve(y_true, y_pred_proba)
+        pr_auc = auc(recall, precision)
         plt.subplot(1, 2, 1)
-        plt.plot(recalls, precisions, label=f'PR-AUC={pr_auc:.4f}')
-        plt.title(f'{model_type} PR Curve')
+        plt.plot(recall, precision, label=f'PR Curve (AUC={pr_auc:.4f})')
+        plt.title(f'{model_type} Precision-Recall Curve')
         plt.xlabel('Recall')
         plt.ylabel('Precision')
         plt.legend()
 
-        # ROC 曲线
+        # 绘制 ROC 曲线
         fpr, tpr, _ = roc_curve(y_true, y_pred_proba)
-        roc_auc = np.trapz(tpr, fpr)
+        roc_auc = auc(fpr, tpr)
         plt.subplot(1, 2, 2)
-        plt.plot(fpr, tpr, label=f'ROC-AUC={roc_auc:.4f}')
+        plt.plot(fpr, tpr, label=f'ROC Curve (AUC={roc_auc:.4f})')
         plt.title(f'{model_type} ROC Curve')
         plt.xlabel('False Positive Rate')
         plt.ylabel('True Positive Rate')
         plt.legend()
 
-        plt.savefig(f"{self.plot_dir}{model_type}_pr_roc.png")
+        plt.tight_layout()
+        output_path = os.path.join(self.plot_dir, f'{model_type}_pr_roc.png')
+        plt.savefig(output_path)
         plt.close()
-        self.logger.info(f"Saved PR/ROC plot to {self.plot_dir}{model_type}_pr_roc.png")
+        self.logger.info(f"Saved PR/ROC plot to {output_path}")
+        # self.logger.info(f"Saved PR/ROC plot to {self.plot_dir}{model_type}_pr_roc.png")
 
     def plot_edge_boxplot(self, df):
         plt.figure(figsize=(10, 6))

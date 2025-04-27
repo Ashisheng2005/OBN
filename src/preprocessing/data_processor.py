@@ -8,7 +8,11 @@
 
 """
 生成模拟训练数据，包含网络特征（如latency、packet_loss、bandwidth等）以及目标变量is_best（分类）和path_cost（回归）。
-is_best基于固定阈值（0.5 ± 0.05）生成，存在类不平衡问题。
+优化目标：
+1. 减少数据量损失，放宽异常值移除条件。
+2. 缓解类别不平衡问题，调整is_best生成逻辑。
+3. 优化特征分布，增加分布平滑性和接口类型差异。
+4. 添加特征工程（分箱、交互特征），支持更高效的训练。
 """
 
 import pandas as pd
@@ -34,7 +38,7 @@ class DataProcessor:
             "FastEthernet": 100
         }
 
-    def detect_outliers_iqr(self, df, column, multiplier=2.0):
+    def detect_outliers_iqr(self, df, column, multiplier=3.0):
         """IQR（四分位距法）,IQR方法适用于单变量离群检测，适合latency、packet_loss和bandwidth等特征。"""
 
         Q1 = df[column].quantile(0.25)
@@ -46,7 +50,7 @@ class DataProcessor:
         self.logger.info(f"Outliers in {column}: {len(outliers)} samples")
         return df[(df[column] >= lower_bound) & (df[column] <= upper_bound)], outliers
 
-    def detect_outliers_isolation_forest(self, df, features, contamination=0.05):
+    def detect_outliers_isolation_forest(self, df, features, contamination=0.02):
         """孤立森林适合多变量离群检测，可以同时考虑多个特征（如latency、packet_loss、bandwidth）之间的关系。"""
 
         iso_forest = IsolationForest(contamination=contamination, random_state=42)
@@ -91,19 +95,14 @@ class DataProcessor:
 
         return df
 
-
-
     def simulate_training_data(self, ospf_data, bgp_data):
         """模拟训练数据集"""
 
         # 获取配置和设置默认值
-        num_samples = self.config.get_nested('data_collection', 'virtual', 'num_samples', default=1000)
+        num_samples = self.config.get_nested('data_collection', 'virtual', 'num_samples', default=8000)
         congestion_lambda = self.config.get_nested('data_collection', 'virtual', 'congestion_lambda', default=2)
         packet_loss_scale = self.config.get_nested('data_collection', 'virtual', 'packet_loss_scale', default=5)
         edge_case_prob = self.config.get_nested('data_collection', 'virtual', 'edge_case_prob', default=0.02)
-
-        # 获取用户设置的条数，没有则默认1000
-        num_samples = self.config.get_nested('data_collection', 'virtual', 'num_samples', default=1000)
 
         # 指标集
         training_data = {
@@ -145,7 +144,7 @@ class DataProcessor:
 
         # 模拟网络拓扑和动态
         interfaces = list(bandwidth_options.keys())
-        interface = random.choices(interfaces, weights=[0.33, 0.33, 0.34])[0]  # 平均分配概率
+        # interface = random.choices(interfaces, weights=[0.33, 0.33, 0.34])[0]  # 平均分配概率
         
         # 仿真逻辑
         for _ in range(num_samples):
@@ -197,7 +196,13 @@ class DataProcessor:
             # 基准延迟
             latency = 10
             # 非拥塞场景添加微小丢包
-            packet_loss =np.random.exponential(scale=0.5) if random.random() < 0.5 else 0
+            # packet_loss =np.random.exponential(scale=0.5) if random.random() < 0.5 else 0
+            # 优化 packet_loss 分布
+            if random.random() < 0.85:  # 85% 低丢包率
+                packet_loss = np.random.exponential(scale=0.5)
+            else:
+                packet_loss = np.random.normal(loc=15, scale=5)
+
             # 拥塞概率
             congestion_prob = 0.3
 
@@ -237,7 +242,7 @@ class DataProcessor:
                 if interface == "FastEthernet":
                     bandwidth_reduction = min(0.2 + 0.1 * congestion_intensity, 0.8)
                     latency_increase = 10 + 5 * congestion_intensity                # 延迟增加
-                    packet_loss = np.random.exponential(scale=packet_loss_scale)    # 丢包率
+                    packet_loss = np.random.exponential(scale=packet_loss_scale * 1.5)    # 丢包率
                     jitter += 5 + 2 * congestion_intensity
                     rtt += 20 + 10 * congestion_intensity
                     queue_length += 50 + 10 * congestion_intensity
@@ -246,7 +251,7 @@ class DataProcessor:
                 elif interface == "GigabitEthernet":
                     bandwidth_reduction = min(0.1 + 0.05 * congestion_intensity, 0.5)
                     latency_increase = 5 + 3 * congestion_intensity
-                    packet_loss = np.random.exponential(scale=packet_loss_scale / 2.5)
+                    packet_loss = np.random.exponential(scale=packet_loss_scale / 2)
                     jitter += 3 + 1.5 * congestion_intensity
                     rtt += 10 + 5 * congestion_intensity
                     queue_length += 30 + 7 * congestion_intensity
@@ -274,13 +279,13 @@ class DataProcessor:
                     self.logger.debug(f"Edge case applied: intermittent packet loss, packet_loss={packet_loss:.2f}")
                 else:
                     # 灾难性丢包
-                    packet_loss += random.uniform(30, 50)  # 高幅度丢包
+                    packet_loss += random.uniform(15, 30)  # 高幅度丢包,降低灾难性丢包幅度
                     self.logger.debug(f"Edge case applied: catastrophic packet loss, packet_loss={packet_loss:.2f}")
 
                 bandwidth_utilization = min(bandwidth_utilization + random.uniform(50, 80), 100)
                 queue_length += random.uniform(100, 200)
                 latency += random.uniform(20, 50)
-                packet_loss += random.uniform(10, 30)  # 加大扰动幅度
+                packet_loss += random.uniform(5, 15)  # 加大扰动幅度
                 jitter += random.uniform(10, 30)
                 rtt += random.uniform(50, 100)
                 route_stability += random.uniform(5, 10)
@@ -298,14 +303,14 @@ class DataProcessor:
                 self.logger.debug(f"Edge case applied: multi-link failure, latency={latency:.2f}")
 
             # 添加平滑噪声，确保分布更连续
-            packet_loss += np.random.normal(loc=0, scale=3.0)       # 添加正态分布噪声
+            packet_loss += np.random.normal(loc=0, scale=2.0)       # 添加正态分布噪声
             packet_loss = min(packet_loss, 50)                      # 设置丢包率上限,现实中很少超过50%
 
             # 分段噪声
             if packet_loss < 10:
                 packet_loss += np.random.normal(loc=0, scale=0.5)  # 低丢包率区域小噪声
             else:
-                packet_loss += np.random.normal(loc=0, scale=2.0)  # 高丢包率区域大噪声
+                packet_loss += np.random.normal(loc=0, scale=1.5)  # 高丢包率区域大噪声
             packet_loss = max(0, packet_loss)                       # 确保0 <= x <= 50
 
             training_data["bandwidth"].append(round(bandwidth))
@@ -328,22 +333,22 @@ class DataProcessor:
             # 动态阈值，基于样本分布
             # 调整is_best评分，考虑拥塞影响
             score = (
-                    0.26 * (local_pref / 200) +
-                    0.16 * (1 - as_path_length / 5) +
-                    0.10 * ospf_state +
-                    0.10 * (bandwidth / bandwidth_options["TenGigabitEthernet"]) -
-                    0.05 * (latency / 100) -
-                    0.05 * (packet_loss / 50) -
+                    0.25 * (local_pref / 200) +
+                    0.15 * (1 - as_path_length / 5) +
+                    0.12 * ospf_state +
+                    0.12 * (bandwidth / self.bandwidth_options["TenGigabitEthernet"]) -
+                    0.04 * (latency / 100) -
+                    0.04 * (packet_loss / 50) -
                     0.03 * (bandwidth_utilization / 100) -
                     0.03 * (jitter / 50) -
                     0.03 * (rtt / 200) -
                     0.02 * (cpu_usage / 100) -
                     0.02 * (memory_usage / 100) -
                     0.02 * (queue_length / 100) -
-                    0.03 * (route_stability / 10) -         # 路径稳定性, 负向特征
-                    0.03 * (latency_bandwidth_ratio / 1) +    # 延迟/带宽比率，负向特征
-                    0.02 * training_data["is_GigabitEthernet"][-1] +  # 正向贡献
-                    0.03 * training_data["is_TenGigabitEthernet"][-1]  # 更高带宽接口贡献更大
+                    0.03 * (route_stability / 10) -
+                    0.03 * (latency_bandwidth_ratio / 1) +
+                    0.02 * training_data["is_GigabitEthernet"][-1] +
+                    0.03 * training_data["is_TenGigabitEthernet"][-1]
             )
 
             threshold = 0.5 - 0.1 * (bandwidth_utilization / 100)  # 高拥塞降低阈值
@@ -363,6 +368,8 @@ class DataProcessor:
             self.logger.warning(f"NaN values detected:\n{df.isna().sum()}")
             df = df.dropna()
             self.logger.info(f"After dropping NaN: DataFrame shape: {df.shape}")
+
+        df["packet_loss"] = df["packet_loss"].clip(lower=0, upper=50)
 
         # 数据验证
         assert len(df) == num_samples, "Length mismatch"
@@ -395,15 +402,22 @@ class DataProcessor:
         df["latency_packet_loss"] = df["latency"] * df["packet_loss"]
         # 添加对 packet_loss 的对数变换
         df["packet_loss_log"] = np.log1p(df["packet_loss"])
-        self.logger.info(
-            f"Added packet_loss_log: mean={df['packet_loss_log'].mean():.4f}, std={df['packet_loss_log'].std():.4f}")
-        df["utilization_queue"] = df["bandwidth_utilization"] * df["queue_length"]
+        # 添加更多交互特征
+        df["bandwidth_ospf_state"] = df["bandwidth"] * df["ospf_state"]
+        df["local_pref_bandwidth"] = df["local_pref"] * df["bandwidth"]
+        # 添加分箱特征
 
+        # 在添加分箱特征时，确保无 NaN
+        df["packet_loss_bin"] = pd.cut(df["packet_loss"], bins=[0, 1, 5, 10, 20, 50], labels=[0, 1, 2, 3, 4],
+                                       include_lowest=True)
 
-        # 确保 bandwidth 不为 0
+        if df["packet_loss_bin"].isna().any():
+            self.logger.warning(f"NaN values in packet_loss_bin: {df['packet_loss_bin'].isna().sum()}")
+            df["packet_loss_bin"] = df["packet_loss_bin"].fillna(0)
+
         if (df["bandwidth"] <= 0).any():
             self.logger.warning(f"Invalid bandwidth values detected: {df['bandwidth'][df['bandwidth'] <= 0]}")
-            df["bandwidth"] = df["bandwidth"].clip(lower=1)  # 将 bandwidth 限制为最小值 1
+            df["bandwidth"] = df["bandwidth"].clip(lower=1)
 
         # 如果bandwidth 很接近与0，可能导致np.log1p(1000 / df["bandwidth"]) NaN或者无穷大进而引发path_cost异常甚至错误
 
@@ -432,18 +446,11 @@ class DataProcessor:
         # 先填补不完整数据
         df = self.handle_missing_values(df)
 
-        # 结合两种方法，先用IQR过滤明显的单变量异常值(如packet_loss超过50的样本),再用孤立森林检测多变量异常（如latency和packet_loss同时异常）
-
-
-        # df = self.detect_outliers_iqr(df, 'packet_loss')
-        # df = self.detect_outliers_iqr(df, 'latency')
-        # df = self.detect_outliers_iqr(df, 'bandwidth')
-
         # IQR
-        df, outliers_iqr = self.detect_outliers_iqr(df, 'packet_loss', multiplier=2.0)
+        df, outliers_iqr = self.detect_outliers_iqr(df, 'packet_loss', multiplier=3.0)
         # 孤立森林
         df, outliers_iso = self.detect_outliers_isolation_forest(df, ['latency', 'packet_loss', 'bandwidth'],
-                                                                 contamination=0.05)
+                                                                 contamination=0.02)
 
         outliers_combined = pd.concat([outliers_iqr, outliers_iso]).drop_duplicates()
         self.logger.info(f"Outliers summary:\n{outliers_combined.describe()}")

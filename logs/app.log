@@ -1,0 +1,1147 @@
+2025-04-27 20:38:06,374 - src.utils.logger - INFO - Starting network path optimization pipeline
+2025-04-27 20:38:06,516 - src.utils.logger - INFO - Initial DataFrame shape: (8000, 18)
+2025-04-27 20:38:07,077 - src.utils.logger - INFO - path_cost column created successfully
+2025-04-27 20:38:07,077 - src.utils.logger - INFO - path_cost head: 0     9.130615
+1    26.494584
+2    22.699760
+3    23.779922
+4    26.850136
+Name: path_cost, dtype: float64
+2025-04-27 20:38:07,080 - src.utils.logger - INFO - Outliers in packet_loss: 0 samples
+2025-04-27 20:38:07,328 - src.utils.logger - INFO - Outliers detected by Isolation Forest: 160 samples
+2025-04-27 20:38:07,377 - src.utils.logger - INFO - Outliers summary:
+       as_path_length  local_pref  ...  local_pref_bandwidth   path_cost
+count      160.000000  160.000000  ...          1.600000e+02  160.000000
+mean         1.643750  112.500000  ...          3.986231e+05   40.478680
+std          0.787855   40.203883  ...          5.234426e+05   10.863291
+min          1.000000   80.000000  ...          3.600000e+02   22.526027
+25%          1.000000   90.000000  ...          8.000000e+03   27.965143
+50%          1.000000  100.000000  ...          1.000000e+05   45.162430
+75%          2.000000  120.000000  ...          8.375000e+05   48.519574
+max          3.000000  250.000000  ...          2.500000e+06   58.953874
+
+[8 rows x 29 columns]
+2025-04-27 20:38:07,407 - src.utils.logger - INFO - Feature correlation with is_best:
+latency                        0.629914
+rtt                            0.619664
+route_stability                0.599574
+jitter                         0.595266
+rtt_log                        0.573350
+latency_packet_loss            0.554099
+jitter_log                     0.525514
+route_stability_log            0.524462
+latency_bandwidth_ratio_log    0.483838
+packet_loss_bin                0.438724
+packet_loss_log                0.431041
+packet_loss                    0.426973
+bandwidth_log                  0.426426
+latency_bandwidth_ratio        0.377855
+ospf_state                     0.365538
+bandwidth                      0.361292
+local_pref_bandwidth           0.340518
+bandwidth_ospf_state           0.296437
+is_TenGigabitEthernet          0.168143
+local_pref                     0.149267
+is_FastEthernet                0.130510
+as_path_length                 0.085020
+bandwidth_utilization          0.041662
+memory_usage                   0.038504
+is_GigabitEthernet             0.037438
+queue_length                   0.033810
+resource_usage                 0.028163
+cpu_usage                      0.016867
+Name: is_best, dtype: float64
+2025-04-27 20:38:07,408 - src.utils.logger - INFO - Feature correlation with path_cost:
+route_stability                0.954623
+rtt_log                        0.953282
+rtt                            0.947261
+latency                        0.941639
+jitter                         0.933546
+route_stability_log            0.917839
+jitter_log                     0.917281
+latency_packet_loss            0.889784
+packet_loss                    0.831584
+packet_loss_bin                0.813378
+packet_loss_log                0.797316
+latency_bandwidth_ratio_log    0.649566
+queue_length                   0.588053
+latency_bandwidth_ratio        0.507116
+bandwidth_log                  0.476566
+bandwidth_utilization          0.385140
+bandwidth                      0.352490
+local_pref_bandwidth           0.326334
+bandwidth_ospf_state           0.276521
+resource_usage                 0.197858
+cpu_usage                      0.175982
+is_FastEthernet                0.172095
+memory_usage                   0.165283
+is_TenGigabitEthernet          0.149873
+as_path_length                 0.034808
+is_GigabitEthernet             0.022274
+ospf_state                     0.014485
+local_pref                     0.004021
+Name: path_cost, dtype: float64
+2025-04-27 20:38:07,409 - src.utils.logger - INFO - FastEthernet packet_loss: mean=7.0354, std=9.7102
+2025-04-27 20:38:07,410 - src.utils.logger - INFO - GigabitEthernet packet_loss: mean=6.8382, std=9.7455
+2025-04-27 20:38:07,411 - src.utils.logger - INFO - TenGigabitEthernet packet_loss: mean=6.0892, std=8.8566
+2025-04-27 20:38:07,411 - src.utils.logger - INFO - packet_loss statistics: mean=6.6553, std=9.4553
+2025-04-27 20:38:07,413 - src.utils.logger - INFO - packet_loss quantiles: 0.25     0.250
+0.50     1.610
+0.75    12.120
+0.95    26.511
+Name: packet_loss, dtype: float64
+2025-04-27 20:38:07,413 - src.utils.logger - INFO - High packet loss (>10): 2127 samples, 27.13%
+2025-04-27 20:38:07,462 - src.utils.logger - INFO - Generated data summary:
+       as_path_length   local_pref  ...  local_pref_bandwidth    path_cost
+count     7840.000000  7840.000000  ...          7.840000e+03  7840.000000
+mean         1.677679   111.506378  ...          3.408621e+05    15.317973
+std          0.791627    36.633965  ...          4.988741e+05     9.151604
+min          1.000000    80.000000  ...          2.700000e+02     4.858860
+25%          1.000000    90.000000  ...          1.000000e+04     8.797927
+50%          1.000000   100.000000  ...          9.000000e+04    10.929110
+75%          2.000000   120.000000  ...          8.000000e+05    22.937470
+max          3.000000   250.000000  ...          2.500000e+06    50.968479
+
+[8 rows x 29 columns]
+2025-04-27 20:38:07,463 - src.utils.logger - INFO - is_best distribution: is_best
+1    0.760969
+0    0.239031
+Name: proportion, dtype: float64
+2025-04-27 20:38:07,463 - src.utils.logger - INFO - jitter summary: mean=12.3983, std=14.5654
+2025-04-27 20:38:07,464 - src.utils.logger - INFO - rtt summary: mean=78.4093, std=59.9324
+2025-04-27 20:38:07,464 - src.utils.logger - INFO - cpu_usage summary: mean=39.0240, std=18.2949
+2025-04-27 20:38:07,464 - src.utils.logger - INFO - memory_usage summary: mean=46.0986, std=14.9929
+2025-04-27 20:38:07,464 - src.utils.logger - INFO - queue_length summary: mean=38.2900, std=56.5239
+2025-04-27 20:38:07,464 - src.utils.logger - INFO - route_stability summary: mean=4.4497, std=5.1584
+2025-04-27 20:38:07,464 - src.utils.logger - INFO - latency_bandwidth_ratio summary: mean=0.6529, std=2.6141
+2025-04-27 20:38:07,464 - src.utils.logger - INFO - path_cost summary: mean=15.3180, std=9.1516
+2025-04-27 20:38:07,464 - src.utils.logger - INFO - Final DataFrame shape: (7840, 30)
+2025-04-27 20:38:07,465 - src.utils.logger - WARNING - Expected 8000 samples, got 7840
+2025-04-27 20:38:07,466 - src.utils.logger - INFO - Num GPUs Available: 0
+2025-04-27 20:38:07,466 - src.utils.logger - INFO - Training classification model
+2025-04-27 20:38:08,731 - src.utils.logger - INFO - Starting Optuna trial 0
+2025-04-27 20:38:08,856 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.0511731843575125}
+2025-04-27 20:38:39,643 - src.utils.logger - INFO - Training completed
+2025-04-27 20:38:39,798 - src.utils.logger - INFO - Validation: Accuracy=0.9337, Precision=1.0000, Recall=0.9128
+2025-04-27 20:38:39,958 - src.utils.logger - INFO - Test: Accuracy=0.9337, Precision=1.0000, Recall=0.9128
+2025-04-27 20:38:40,166 - src.utils.logger - INFO - Optimal threshold (max F1): 0.2130, F1: 0.9715
+2025-04-27 20:38:40,285 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.6258
+2025-04-27 20:38:40,288 - src.utils.logger - INFO - Test F1 Score: 0.9715, Recall: 0.9589
+2025-04-27 20:38:40,289 - src.utils.logger - INFO - Starting Optuna trial 1
+2025-04-27 20:38:40,375 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.0511731843575125}
+2025-04-27 20:39:27,981 - src.utils.logger - INFO - Training completed
+2025-04-27 20:39:28,191 - src.utils.logger - INFO - Validation: Accuracy=0.9509, Precision=0.9559, Recall=0.9807
+2025-04-27 20:39:28,454 - src.utils.logger - INFO - Test: Accuracy=0.9509, Precision=0.9559, Recall=0.9807
+2025-04-27 20:39:28,702 - src.utils.logger - INFO - Optimal threshold (max F1): 0.5988, F1: 0.9719
+2025-04-27 20:39:28,823 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.6344
+2025-04-27 20:39:28,828 - src.utils.logger - INFO - Test F1 Score: 0.9719, Recall: 0.9698
+2025-04-27 20:39:28,828 - src.utils.logger - INFO - Starting Optuna trial 2
+2025-04-27 20:39:28,901 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.0511731843575125}
+2025-04-27 20:40:06,842 - src.utils.logger - INFO - Training completed
+2025-04-27 20:40:07,119 - src.utils.logger - INFO - Validation: Accuracy=0.9464, Precision=0.9483, Recall=0.9832
+2025-04-27 20:40:07,326 - src.utils.logger - INFO - Test: Accuracy=0.9464, Precision=0.9483, Recall=0.9832
+2025-04-27 20:40:07,651 - src.utils.logger - INFO - Optimal threshold (max F1): 0.6266, F1: 0.9697
+2025-04-27 20:40:07,796 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.6341
+2025-04-27 20:40:07,801 - src.utils.logger - INFO - Test F1 Score: 0.9697, Recall: 0.9673
+2025-04-27 20:40:07,801 - src.utils.logger - INFO - Starting Optuna trial 3
+2025-04-27 20:40:07,859 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.0511731843575125}
+2025-04-27 20:40:40,719 - src.utils.logger - INFO - Training completed
+2025-04-27 20:40:40,959 - src.utils.logger - INFO - Validation: Accuracy=0.9534, Precision=0.9613, Recall=0.9782
+2025-04-27 20:40:41,195 - src.utils.logger - INFO - Test: Accuracy=0.9534, Precision=0.9613, Recall=0.9782
+2025-04-27 20:40:41,511 - src.utils.logger - INFO - Optimal threshold (max F1): 0.5393, F1: 0.9713
+2025-04-27 20:40:41,672 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.6417
+2025-04-27 20:40:41,675 - src.utils.logger - INFO - Test F1 Score: 0.9713, Recall: 0.9782
+2025-04-27 20:40:41,675 - src.utils.logger - INFO - Starting Optuna trial 4
+2025-04-27 20:40:41,744 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.0511731843575125}
+2025-04-27 20:41:17,434 - src.utils.logger - INFO - Training completed
+2025-04-27 20:41:17,733 - src.utils.logger - INFO - Validation: Accuracy=0.9496, Precision=0.9558, Recall=0.9790
+2025-04-27 20:41:17,950 - src.utils.logger - INFO - Test: Accuracy=0.9496, Precision=0.9558, Recall=0.9790
+2025-04-27 20:41:18,298 - src.utils.logger - INFO - Optimal threshold (max F1): 0.4678, F1: 0.9694
+2025-04-27 20:41:18,499 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.6474
+2025-04-27 20:41:18,502 - src.utils.logger - INFO - Test F1 Score: 0.9694, Recall: 0.9832
+2025-04-27 20:41:18,502 - src.utils.logger - INFO - Best hyperparameters: {'n_layers': 4, 'dropout_rate': 0.23094501217025823, 'l2_strength': 0.00030750933707112126, 'learning_rate': 0.004369547930445271, 'batch_size': 59}
+2025-04-27 20:41:18,596 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.0511731843575125}
+2025-04-27 20:42:08,497 - src.utils.logger - INFO - Training completed
+2025-04-27 20:42:08,651 - src.utils.logger - INFO - Validation: Accuracy=0.9522, Precision=0.9605, Recall=0.9774
+2025-04-27 20:42:08,789 - src.utils.logger - INFO - Test: Accuracy=0.9611, Precision=0.9772, Recall=0.9715
+2025-04-27 20:42:09,012 - src.utils.logger - INFO - Optimal threshold (max F1): 0.5398, F1: 0.9720
+2025-04-27 20:42:09,199 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.6298
+2025-04-27 20:42:09,202 - src.utils.logger - INFO - Test F1 Score: 0.9725, Recall: 0.9648
+2025-04-27 20:42:09,543 - src.utils.logger - INFO - Saved plot to ./chart/Classification_4704.png
+2025-04-27 20:42:11,562 - src.utils.logger - INFO - XGBoost Classification Accuracy: 0.9496
+2025-04-27 20:42:11,562 - src.utils.logger - INFO - Training regression model
+2025-04-27 20:42:11,597 - src.utils.logger - INFO - Starting Optuna trial 0
+2025-04-27 20:42:11,636 - src.utils.logger - WARNING - weights_train is None, using uniform weights.
+2025-04-27 20:42:37,313 - src.utils.logger - INFO - Test R2: 0.9065
+2025-04-27 20:42:37,314 - src.utils.logger - INFO - Starting Optuna trial 1
+2025-04-27 20:42:37,399 - src.utils.logger - WARNING - weights_train is None, using uniform weights.
+2025-04-27 20:43:06,779 - src.utils.logger - INFO - Test R2: 0.9963
+2025-04-27 20:43:06,780 - src.utils.logger - INFO - Starting Optuna trial 2
+2025-04-27 20:43:06,859 - src.utils.logger - WARNING - weights_train is None, using uniform weights.
+2025-04-27 20:43:53,174 - src.utils.logger - INFO - Test R2: 0.9980
+2025-04-27 20:43:53,175 - src.utils.logger - INFO - Starting Optuna trial 3
+2025-04-27 20:43:53,281 - src.utils.logger - WARNING - weights_train is None, using uniform weights.
+2025-04-27 20:44:57,837 - src.utils.logger - INFO - Test R2: 0.9863
+2025-04-27 20:44:57,838 - src.utils.logger - INFO - Starting Optuna trial 4
+2025-04-27 20:44:57,914 - src.utils.logger - WARNING - weights_train is None, using uniform weights.
+2025-04-27 20:45:49,123 - src.utils.logger - INFO - Test R2: 0.8979
+2025-04-27 20:45:49,125 - src.utils.logger - INFO - Best hyperparameters: {'n_layers': 3, 'dropout_rate': 0.24122856203731374, 'l2_strength': 0.005073184831819351, 'learning_rate': 0.0023674970546113065, 'batch_size': 36}
+2025-04-27 20:46:30,893 - src.utils.logger - INFO - Test R2: 0.9926
+2025-04-27 20:46:30,894 - src.utils.logger - INFO - R2 for minority class (is_best=1): 0.9946
+2025-04-27 20:46:31,313 - src.utils.logger - INFO - Saved plot to ./chart/Regression_4704.png
+2025-04-27 20:46:31,478 - src.utils.logger - INFO - XGBoost Regression R2: 0.9950
+2025-04-27 20:46:31,478 - src.utils.logger - INFO - Pipeline completed successfully
+2025-04-27 21:20:55,020 - src.utils.logger - INFO - Starting network path optimization pipeline
+2025-04-27 21:20:55,150 - src.utils.logger - INFO - Initial DataFrame shape: (8000, 18)
+2025-04-27 21:20:55,753 - src.utils.logger - INFO - path_cost column created successfully
+2025-04-27 21:20:55,754 - src.utils.logger - INFO - path_cost head: 0    10.732709
+1    13.734010
+2    30.565587
+3    10.200255
+4    27.098453
+Name: path_cost, dtype: float64
+2025-04-27 21:20:55,756 - src.utils.logger - INFO - Outliers in packet_loss: 0 samples
+2025-04-27 21:20:56,053 - src.utils.logger - INFO - Outliers detected by Isolation Forest: 160 samples
+2025-04-27 21:20:56,097 - src.utils.logger - INFO - Outliers summary:
+       as_path_length  local_pref  ...  local_pref_bandwidth   path_cost
+count      160.000000  160.000000  ...          1.600000e+02  160.000000
+mean         1.687500  119.062500  ...          2.916418e+05   42.180180
+std          0.802414   43.492165  ...          5.027823e+05   10.142036
+min          1.000000   80.000000  ...          4.000000e+02   21.669943
+25%          1.000000  100.000000  ...          2.500000e+03   31.121898
+50%          1.000000  100.000000  ...          8.450000e+04   45.461323
+75%          2.000000  120.000000  ...          1.643750e+05   48.472153
+max          3.000000  250.000000  ...          2.500000e+06   60.169549
+
+[8 rows x 29 columns]
+2025-04-27 21:20:56,135 - src.utils.logger - INFO - Feature correlation with is_best:
+latency                        0.609882
+rtt                            0.598940
+route_stability                0.579615
+jitter                         0.576100
+rtt_log                        0.551855
+latency_packet_loss            0.532909
+route_stability_log            0.506209
+jitter_log                     0.505454
+latency_bandwidth_ratio_log    0.492687
+bandwidth_log                  0.441825
+packet_loss_bin                0.400006
+packet_loss_log                0.395569
+latency_bandwidth_ratio        0.387951
+packet_loss                    0.383320
+ospf_state                     0.374574
+bandwidth                      0.362339
+local_pref_bandwidth           0.342379
+bandwidth_ospf_state           0.299435
+is_TenGigabitEthernet          0.186427
+is_FastEthernet                0.163647
+local_pref                     0.132504
+as_path_length                 0.089433
+bandwidth_utilization          0.045325
+resource_usage                 0.035295
+cpu_usage                      0.034774
+memory_usage                   0.023225
+is_GigabitEthernet             0.021870
+queue_length                   0.013142
+Name: is_best, dtype: float64
+2025-04-27 21:20:56,135 - src.utils.logger - INFO - Feature correlation with path_cost:
+rtt_log                        0.954006
+route_stability                0.952826
+rtt                            0.946489
+latency                        0.941313
+jitter                         0.931026
+jitter_log                     0.918207
+route_stability_log            0.915844
+latency_packet_loss            0.894196
+packet_loss                    0.820029
+packet_loss_bin                0.808807
+packet_loss_log                0.790087
+latency_bandwidth_ratio_log    0.650500
+queue_length                   0.585781
+latency_bandwidth_ratio        0.517349
+bandwidth_log                  0.450173
+bandwidth_utilization          0.411319
+bandwidth                      0.314517
+local_pref_bandwidth           0.287989
+bandwidth_ospf_state           0.248016
+resource_usage                 0.206154
+cpu_usage                      0.190109
+is_FastEthernet                0.161562
+memory_usage                   0.159219
+is_TenGigabitEthernet          0.132055
+as_path_length                 0.044578
+is_GigabitEthernet             0.030160
+local_pref                     0.019751
+ospf_state                     0.011828
+Name: path_cost, dtype: float64
+2025-04-27 21:20:56,137 - src.utils.logger - INFO - FastEthernet packet_loss: mean=7.0133, std=9.6065
+2025-04-27 21:20:56,139 - src.utils.logger - INFO - GigabitEthernet packet_loss: mean=6.9154, std=9.5172
+2025-04-27 21:20:56,140 - src.utils.logger - INFO - TenGigabitEthernet packet_loss: mean=6.6143, std=9.1301
+2025-04-27 21:20:56,141 - src.utils.logger - INFO - packet_loss statistics: mean=6.8492, std=9.4223
+2025-04-27 21:20:56,142 - src.utils.logger - INFO - packet_loss quantiles: 0.25     0.2500
+0.50     1.7000
+0.75    12.8700
+0.95    26.6205
+Name: packet_loss, dtype: float64
+2025-04-27 21:20:56,143 - src.utils.logger - INFO - High packet loss (>10): 2206 samples, 28.14%
+2025-04-27 21:20:56,190 - src.utils.logger - INFO - Generated data summary:
+       as_path_length   local_pref  ...  local_pref_bandwidth    path_cost
+count     7840.000000  7840.000000  ...          7.840000e+03  7840.000000
+mean         1.669388   110.275510  ...          3.392793e+05    15.370115
+std          0.790543    34.689969  ...          4.925641e+05     9.068543
+min          1.000000    80.000000  ...          3.000000e+02     4.768620
+25%          1.000000    90.000000  ...          1.000000e+04     8.842682
+50%          1.000000   100.000000  ...          9.000000e+04    10.947276
+75%          2.000000   120.000000  ...          8.000000e+05    23.007169
+max          3.000000   250.000000  ...          2.500000e+06    54.254391
+
+[8 rows x 29 columns]
+2025-04-27 21:20:56,191 - src.utils.logger - INFO - is_best distribution: is_best
+1    0.765051
+0    0.234949
+Name: proportion, dtype: float64
+2025-04-27 21:20:56,192 - src.utils.logger - INFO - jitter summary: mean=12.4587, std=14.3754
+2025-04-27 21:20:56,192 - src.utils.logger - INFO - rtt summary: mean=78.2194, std=58.8367
+2025-04-27 21:20:56,192 - src.utils.logger - INFO - cpu_usage summary: mean=38.9477, std=18.2108
+2025-04-27 21:20:56,192 - src.utils.logger - INFO - memory_usage summary: mean=46.1158, std=15.0738
+2025-04-27 21:20:56,193 - src.utils.logger - INFO - queue_length summary: mean=39.7347, std=58.2495
+2025-04-27 21:20:56,193 - src.utils.logger - INFO - route_stability summary: mean=4.4654, std=5.0997
+2025-04-27 21:20:56,193 - src.utils.logger - INFO - latency_bandwidth_ratio summary: mean=0.6521, std=2.5772
+2025-04-27 21:20:56,193 - src.utils.logger - INFO - path_cost summary: mean=15.3701, std=9.0685
+2025-04-27 21:20:56,193 - src.utils.logger - INFO - Final DataFrame shape: (7840, 30)
+2025-04-27 21:20:56,193 - src.utils.logger - WARNING - Expected 8000 samples, got 7840
+2025-04-27 21:20:56,195 - src.utils.logger - INFO - Num GPUs Available: 0
+2025-04-27 21:20:56,195 - src.utils.logger - INFO - Training classification model
+2025-04-27 21:20:56,961 - src.utils.logger - INFO - Starting Optuna trial 0
+2025-04-27 21:20:57,094 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.0456237843845224}
+2025-04-27 21:22:26,738 - src.utils.logger - INFO - Training completed
+2025-04-27 21:22:26,874 - src.utils.logger - INFO - Validation: Accuracy=0.9611, Precision=0.9758, Recall=0.9733
+2025-04-27 21:22:27,007 - src.utils.logger - INFO - Test: Accuracy=0.9611, Precision=0.9758, Recall=0.9733
+2025-04-27 21:22:27,220 - src.utils.logger - INFO - Optimal threshold (max F1): 0.4365, F1: 0.9763
+2025-04-27 21:22:27,376 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.6411
+2025-04-27 21:22:27,378 - src.utils.logger - INFO - Test F1 Score: 0.9763, Recall: 0.9775
+2025-04-27 21:22:27,379 - src.utils.logger - INFO - Starting Optuna trial 1
+2025-04-27 21:22:27,454 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.0456237843845224}
+2025-04-27 21:23:36,982 - src.utils.logger - INFO - Training completed
+2025-04-27 21:23:37,198 - src.utils.logger - INFO - Validation: Accuracy=0.9560, Precision=0.9804, Recall=0.9616
+2025-04-27 21:23:37,420 - src.utils.logger - INFO - Test: Accuracy=0.9560, Precision=0.9804, Recall=0.9616
+2025-04-27 21:23:37,673 - src.utils.logger - INFO - Optimal threshold (max F1): 0.3275, F1: 0.9714
+2025-04-27 21:23:37,796 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.6452
+2025-04-27 21:23:37,800 - src.utils.logger - INFO - Test F1 Score: 0.9714, Recall: 0.9775
+2025-04-27 21:23:37,801 - src.utils.logger - INFO - Starting Optuna trial 2
+2025-04-27 21:23:37,884 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.0456237843845224}
+2025-04-27 21:25:15,301 - src.utils.logger - INFO - Training completed
+2025-04-27 21:25:15,431 - src.utils.logger - INFO - Validation: Accuracy=0.9566, Precision=0.9701, Recall=0.9733
+2025-04-27 21:25:15,562 - src.utils.logger - INFO - Test: Accuracy=0.9566, Precision=0.9701, Recall=0.9733
+2025-04-27 21:25:15,774 - src.utils.logger - INFO - Optimal threshold (max F1): 0.4019, F1: 0.9744
+2025-04-27 21:25:15,888 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.6469
+2025-04-27 21:25:15,890 - src.utils.logger - INFO - Test F1 Score: 0.9744, Recall: 0.9825
+2025-04-27 21:25:15,891 - src.utils.logger - INFO - Starting Optuna trial 3
+2025-04-27 21:25:15,968 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.0456237843845224}
+2025-04-27 21:25:41,784 - src.utils.logger - INFO - Training completed
+2025-04-27 21:25:41,945 - src.utils.logger - INFO - Validation: Accuracy=0.9598, Precision=0.9694, Recall=0.9783
+2025-04-27 21:25:42,090 - src.utils.logger - INFO - Test: Accuracy=0.9598, Precision=0.9694, Recall=0.9783
+2025-04-27 21:25:42,317 - src.utils.logger - INFO - Optimal threshold (max F1): 0.5538, F1: 0.9750
+2025-04-27 21:25:42,445 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.6414
+2025-04-27 21:25:42,450 - src.utils.logger - INFO - Test F1 Score: 0.9750, Recall: 0.9766
+2025-04-27 21:25:42,451 - src.utils.logger - INFO - Starting Optuna trial 4
+2025-04-27 21:25:42,512 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.0456237843845224}
+2025-04-27 21:26:13,751 - src.utils.logger - INFO - Training completed
+2025-04-27 21:26:13,861 - src.utils.logger - INFO - Validation: Accuracy=0.9471, Precision=0.9861, Recall=0.9441
+2025-04-27 21:26:13,983 - src.utils.logger - INFO - Test: Accuracy=0.9471, Precision=0.9861, Recall=0.9441
+2025-04-27 21:26:14,139 - src.utils.logger - INFO - Optimal threshold (max F1): 0.3413, F1: 0.9693
+2025-04-27 21:26:14,247 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.6344
+2025-04-27 21:26:14,250 - src.utils.logger - INFO - Test F1 Score: 0.9693, Recall: 0.9625
+2025-04-27 21:26:14,251 - src.utils.logger - INFO - Best hyperparameters: {'n_layers': 5, 'dropout_rate': 0.3147398972144238, 'l2_strength': 0.0007191744717781725, 'learning_rate': 4.884121026323966e-05, 'batch_size': 32}
+2025-04-27 21:26:14,305 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.0456237843845224}
+2025-04-27 21:27:01,155 - src.utils.logger - INFO - Training completed
+2025-04-27 21:27:01,339 - src.utils.logger - INFO - Validation: Accuracy=0.9617, Precision=0.9766, Recall=0.9733
+2025-04-27 21:27:01,477 - src.utils.logger - INFO - Test: Accuracy=0.9515, Precision=0.9676, Recall=0.9692
+2025-04-27 21:27:01,696 - src.utils.logger - INFO - Optimal threshold (max F1): 0.4689, F1: 0.9758
+2025-04-27 21:27:01,821 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.6431
+2025-04-27 21:27:01,825 - src.utils.logger - INFO - Test F1 Score: 0.9688, Recall: 0.9717
+2025-04-27 21:27:02,064 - src.utils.logger - INFO - Saved plot to ./chart/Classification_4704.png
+2025-04-27 21:27:03,931 - src.utils.logger - INFO - XGBoost Classification Accuracy: 0.9573
+2025-04-27 21:27:03,931 - src.utils.logger - INFO - Training regression model
+2025-04-27 21:27:03,960 - src.utils.logger - INFO - Starting Optuna trial 0
+2025-04-27 21:27:03,999 - src.utils.logger - WARNING - weights_train is None, using uniform weights.
+2025-04-27 21:27:45,707 - src.utils.logger - INFO - Test R2: 0.9915
+2025-04-27 21:27:45,707 - src.utils.logger - INFO - Starting Optuna trial 1
+2025-04-27 21:27:45,765 - src.utils.logger - WARNING - weights_train is None, using uniform weights.
+2025-04-27 21:28:45,002 - src.utils.logger - INFO - Test R2: 0.9975
+2025-04-27 21:28:45,002 - src.utils.logger - INFO - Starting Optuna trial 2
+2025-04-27 21:28:45,058 - src.utils.logger - WARNING - weights_train is None, using uniform weights.
+2025-04-27 21:31:44,388 - src.utils.logger - INFO - Test R2: 0.9942
+2025-04-27 21:31:44,389 - src.utils.logger - INFO - Starting Optuna trial 3
+2025-04-27 21:31:44,454 - src.utils.logger - WARNING - weights_train is None, using uniform weights.
+2025-04-27 21:32:17,068 - src.utils.logger - INFO - Test R2: 0.8275
+2025-04-27 21:32:17,069 - src.utils.logger - INFO - Starting Optuna trial 4
+2025-04-27 21:32:17,128 - src.utils.logger - WARNING - weights_train is None, using uniform weights.
+2025-04-27 21:32:53,563 - src.utils.logger - INFO - Test R2: 0.9976
+2025-04-27 21:32:53,564 - src.utils.logger - INFO - Best hyperparameters: {'n_layers': 4, 'dropout_rate': 0.21745126900400424, 'l2_strength': 0.0018233482507870858, 'learning_rate': 0.00599233587024161, 'batch_size': 33}
+2025-04-27 21:34:00,323 - src.utils.logger - INFO - Test R2: 0.9979
+2025-04-27 21:34:00,324 - src.utils.logger - INFO - R2 for minority class (is_best=1): 0.9964
+2025-04-27 21:34:00,555 - src.utils.logger - INFO - Saved plot to ./chart/Regression_4704.png
+2025-04-27 21:34:00,674 - src.utils.logger - INFO - XGBoost Regression R2: 0.9945
+2025-04-27 21:34:00,674 - src.utils.logger - INFO - Pipeline completed successfully
+2025-04-27 21:49:08,908 - src.utils.logger - INFO - Starting network path optimization pipeline
+2025-04-27 21:49:09,114 - src.utils.logger - INFO - Initial DataFrame shape: (8000, 18)
+2025-04-27 21:49:09,832 - src.utils.logger - INFO - path_cost column created successfully
+2025-04-27 21:49:09,833 - src.utils.logger - INFO - path_cost head: 0     7.434680
+1    10.984435
+2    30.661809
+3     8.799255
+4    10.080247
+Name: path_cost, dtype: float64
+2025-04-27 21:49:09,835 - src.utils.logger - INFO - Outliers in packet_loss: 0 samples
+2025-04-27 21:49:10,094 - src.utils.logger - INFO - Outliers detected by Isolation Forest: 160 samples
+2025-04-27 21:49:10,173 - src.utils.logger - INFO - Outliers summary:
+       as_path_length  local_pref  ...  local_pref_bandwidth   path_cost
+count      160.000000  160.000000  ...          1.600000e+02  160.000000
+mean         1.681250  109.375000  ...          4.028598e+05   40.995738
+std          0.803858   36.971645  ...          5.295663e+05   10.802570
+min          1.000000   80.000000  ...          2.000000e+02   23.568650
+25%          1.000000   90.000000  ...          8.000000e+03   28.471427
+50%          1.000000  100.000000  ...          9.200000e+04   45.171031
+75%          2.000000  100.000000  ...          8.010000e+05   49.175269
+max          3.000000  250.000000  ...          2.500000e+06   59.678093
+
+[8 rows x 29 columns]
+2025-04-27 21:49:10,207 - src.utils.logger - INFO - Feature correlation with is_best:
+bandwidth_ospf_state           0.583017
+bandwidth                      0.566009
+bandwidth_log                  0.558379
+local_pref_bandwidth           0.549909
+rtt_log                        0.445406
+route_stability_log            0.441354
+is_TenGigabitEthernet          0.441019
+route_stability                0.436368
+jitter_log                     0.433864
+latency                        0.430627
+rtt                            0.426187
+jitter                         0.419213
+latency_packet_loss            0.355122
+is_FastEthernet                0.334726
+ospf_state                     0.329297
+latency_bandwidth_ratio_log    0.318371
+packet_loss_bin                0.315695
+packet_loss_log                0.307485
+packet_loss                    0.299467
+local_pref                     0.258923
+queue_length                   0.243351
+as_path_length                 0.201172
+latency_bandwidth_ratio        0.189488
+resource_usage                 0.113350
+cpu_usage                      0.103277
+is_GigabitEthernet             0.101030
+memory_usage                   0.087966
+bandwidth_utilization          0.003635
+Name: is_best, dtype: float64
+2025-04-27 21:49:10,208 - src.utils.logger - INFO - Feature correlation with path_cost:
+route_stability                0.951496
+rtt_log                        0.950874
+rtt                            0.945078
+latency                        0.936094
+jitter                         0.927169
+route_stability_log            0.914036
+jitter_log                     0.913895
+latency_packet_loss            0.886600
+packet_loss_bin                0.784366
+packet_loss                    0.779753
+packet_loss_log                0.764977
+latency_bandwidth_ratio_log    0.637432
+queue_length                   0.617099
+latency_bandwidth_ratio        0.469617
+bandwidth_log                  0.457029
+bandwidth_utilization          0.424501
+bandwidth                      0.328718
+local_pref_bandwidth           0.300615
+bandwidth_ospf_state           0.260843
+resource_usage                 0.193293
+cpu_usage                      0.176657
+is_FastEthernet                0.163879
+memory_usage                   0.149017
+is_TenGigabitEthernet          0.146539
+as_path_length                 0.031955
+is_GigabitEthernet             0.018738
+local_pref                     0.013819
+ospf_state                     0.012924
+Name: path_cost, dtype: float64
+2025-04-27 21:49:10,209 - src.utils.logger - INFO - FastEthernet packet_loss: mean=8.2149, std=11.7120
+2025-04-27 21:49:10,210 - src.utils.logger - INFO - GigabitEthernet packet_loss: mean=8.5146, std=12.1778
+2025-04-27 21:49:10,211 - src.utils.logger - INFO - TenGigabitEthernet packet_loss: mean=7.3853, std=10.8349
+2025-04-27 21:49:10,211 - src.utils.logger - INFO - packet_loss statistics: mean=8.0515, std=11.6119
+2025-04-27 21:49:10,212 - src.utils.logger - INFO - packet_loss quantiles: 0.25     0.000
+0.50     1.840
+0.75    14.185
+0.95    34.441
+Name: packet_loss, dtype: float64
+2025-04-27 21:49:10,212 - src.utils.logger - INFO - High packet loss (>10): 2341 samples, 29.86%
+2025-04-27 21:49:10,257 - src.utils.logger - INFO - Generated data summary:
+       as_path_length   local_pref  ...  local_pref_bandwidth    path_cost
+count     7840.000000  7840.000000  ...          7.840000e+03  7840.000000
+mean         1.648597   111.859694  ...          3.374907e+05    15.459804
+std          0.783886    37.599018  ...          5.005181e+05     9.245293
+min          1.000000    80.000000  ...          1.600000e+02     4.690780
+25%          1.000000    90.000000  ...          1.000000e+04     8.846700
+50%          1.000000   100.000000  ...          9.000000e+04    10.961168
+75%          2.000000   120.000000  ...          8.000000e+05    23.415529
+max          3.000000   250.000000  ...          2.500000e+06    57.630352
+
+[8 rows x 29 columns]
+2025-04-27 21:49:10,258 - src.utils.logger - INFO - is_best distribution: is_best
+0    0.570918
+1    0.429082
+Name: proportion, dtype: float64
+2025-04-27 21:49:10,258 - src.utils.logger - INFO - jitter summary: mean=12.3561, std=14.4329
+2025-04-27 21:49:10,259 - src.utils.logger - INFO - rtt summary: mean=77.8281, std=58.6296
+2025-04-27 21:49:10,259 - src.utils.logger - INFO - cpu_usage summary: mean=38.9219, std=18.0983
+2025-04-27 21:49:10,259 - src.utils.logger - INFO - memory_usage summary: mean=45.8558, std=14.8524
+2025-04-27 21:49:10,259 - src.utils.logger - INFO - queue_length summary: mean=40.1353, std=58.1064
+2025-04-27 21:49:10,260 - src.utils.logger - INFO - route_stability summary: mean=4.4672, std=5.1180
+2025-04-27 21:49:10,260 - src.utils.logger - INFO - latency_bandwidth_ratio summary: mean=0.6794, std=2.9747
+2025-04-27 21:49:10,260 - src.utils.logger - INFO - path_cost summary: mean=15.4598, std=9.2453
+2025-04-27 21:49:10,260 - src.utils.logger - INFO - Final DataFrame shape: (7840, 30)
+2025-04-27 21:49:10,260 - src.utils.logger - WARNING - Expected 8000 samples, got 7840
+2025-04-27 21:49:10,261 - src.utils.logger - INFO - Num GPUs Available: 0
+2025-04-27 21:49:10,261 - src.utils.logger - INFO - Training classification model
+2025-04-27 21:49:10,298 - src.utils.logger - ERROR - Pipeline failed: The specified ratio required to remove samples from the minority class while trying to generate new samples. Please increase the ratio.
+2025-04-27 21:56:20,420 - src.utils.logger - INFO - Starting network path optimization pipeline
+2025-04-27 21:56:20,635 - src.utils.logger - INFO - Initial DataFrame shape: (8000, 18)
+2025-04-27 21:56:21,424 - src.utils.logger - INFO - path_cost column created successfully
+2025-04-27 21:56:21,425 - src.utils.logger - INFO - path_cost head: 0     7.553340
+1     9.603364
+2     8.260307
+3    26.867086
+4    11.927495
+Name: path_cost, dtype: float64
+2025-04-27 21:56:21,427 - src.utils.logger - INFO - Outliers in packet_loss: 0 samples
+2025-04-27 21:56:21,740 - src.utils.logger - INFO - Outliers detected by Isolation Forest: 160 samples
+2025-04-27 21:56:21,793 - src.utils.logger - INFO - Outliers summary:
+       as_path_length  local_pref  ...  local_pref_bandwidth   path_cost
+count      160.000000  160.000000  ...          1.600000e+02  160.000000
+mean         1.650000  114.500000  ...          5.244595e+05   39.054748
+std          0.745637   38.896735  ...          5.608285e+05   12.175305
+min          1.000000   80.000000  ...          2.700000e+02   23.316566
+25%          1.000000   90.000000  ...          7.612500e+03   27.289803
+50%          1.000000  100.000000  ...          1.500000e+05   42.836253
+75%          2.000000  120.000000  ...          9.050000e+05   49.352315
+max          3.000000  250.000000  ...          2.500000e+06   64.871571
+
+[8 rows x 29 columns]
+2025-04-27 21:56:21,822 - src.utils.logger - INFO - Feature correlation with is_best:
+bandwidth_ospf_state           0.586142
+bandwidth                      0.561537
+bandwidth_log                  0.555631
+local_pref_bandwidth           0.552171
+rtt_log                        0.454492
+route_stability_log            0.453392
+jitter_log                     0.447380
+route_stability                0.445692
+latency                        0.441227
+rtt                            0.435621
+is_TenGigabitEthernet          0.433689
+jitter                         0.426198
+latency_packet_loss            0.360471
+ospf_state                     0.337510
+latency_bandwidth_ratio_log    0.328303
+packet_loss_bin                0.327169
+is_FastEthernet                0.322945
+packet_loss_log                0.319016
+packet_loss                    0.305791
+local_pref                     0.249063
+queue_length                   0.234646
+as_path_length                 0.217582
+latency_bandwidth_ratio        0.196888
+resource_usage                 0.131577
+cpu_usage                      0.123544
+is_GigabitEthernet             0.108094
+memory_usage                   0.096912
+bandwidth_utilization          0.003071
+Name: is_best, dtype: float64
+2025-04-27 21:56:21,823 - src.utils.logger - INFO - Feature correlation with path_cost:
+rtt_log                        0.953054
+route_stability                0.952501
+rtt                            0.946202
+latency                        0.937406
+jitter                         0.928508
+jitter_log                     0.915527
+route_stability_log            0.914628
+latency_packet_loss            0.886499
+packet_loss_bin                0.791503
+packet_loss                    0.784345
+packet_loss_log                0.772071
+latency_bandwidth_ratio_log    0.651275
+queue_length                   0.595640
+latency_bandwidth_ratio        0.483167
+bandwidth_log                  0.482470
+bandwidth_utilization          0.390669
+bandwidth                      0.344294
+local_pref_bandwidth           0.320210
+bandwidth_ospf_state           0.272139
+is_FastEthernet                0.180557
+resource_usage                 0.176963
+cpu_usage                      0.163286
+is_TenGigabitEthernet          0.156780
+memory_usage                   0.135568
+as_path_length                 0.036624
+is_GigabitEthernet             0.024021
+ospf_state                     0.014126
+local_pref                     0.005556
+Name: path_cost, dtype: float64
+2025-04-27 21:56:21,824 - src.utils.logger - INFO - FastEthernet packet_loss: mean=8.3529, std=11.9259
+2025-04-27 21:56:21,825 - src.utils.logger - INFO - GigabitEthernet packet_loss: mean=8.1995, std=11.9489
+2025-04-27 21:56:21,826 - src.utils.logger - INFO - TenGigabitEthernet packet_loss: mean=7.2353, std=10.7837
+2025-04-27 21:56:21,826 - src.utils.logger - INFO - packet_loss statistics: mean=7.9363, std=11.5838
+2025-04-27 21:56:21,828 - src.utils.logger - INFO - packet_loss quantiles: 0.25     0.0000
+0.50     1.7700
+0.75    13.9725
+0.95    34.1920
+Name: packet_loss, dtype: float64
+2025-04-27 21:56:21,829 - src.utils.logger - INFO - High packet loss (>10): 2293 samples, 29.25%
+2025-04-27 21:56:21,880 - src.utils.logger - INFO - Generated data summary:
+       as_path_length   local_pref  ...  local_pref_bandwidth    path_cost
+count     7840.000000  7840.000000  ...          7.840000e+03  7840.000000
+mean         1.654592   111.345663  ...          3.378603e+05    15.517688
+std          0.785166    36.141039  ...          4.953922e+05     9.347905
+min          1.000000    80.000000  ...          2.000000e+02     4.751720
+25%          1.000000    90.000000  ...          1.000000e+04     8.864215
+50%          1.000000   100.000000  ...          9.000000e+04    11.001825
+75%          2.000000   120.000000  ...          8.000000e+05    23.395908
+max          3.000000   250.000000  ...          2.500000e+06    56.370057
+
+[8 rows x 29 columns]
+2025-04-27 21:56:21,883 - src.utils.logger - INFO - is_best distribution: is_best
+0    0.569133
+1    0.430867
+Name: proportion, dtype: float64
+2025-04-27 21:56:21,883 - src.utils.logger - INFO - jitter summary: mean=12.6035, std=14.7153
+2025-04-27 21:56:21,883 - src.utils.logger - INFO - rtt summary: mean=78.9743, std=60.4673
+2025-04-27 21:56:21,884 - src.utils.logger - INFO - cpu_usage summary: mean=38.7209, std=18.1924
+2025-04-27 21:56:21,884 - src.utils.logger - INFO - memory_usage summary: mean=45.9329, std=14.9989
+2025-04-27 21:56:21,885 - src.utils.logger - INFO - queue_length summary: mean=38.7644, std=56.7576
+2025-04-27 21:56:21,885 - src.utils.logger - INFO - route_stability summary: mean=4.5206, std=5.2073
+2025-04-27 21:56:21,885 - src.utils.logger - INFO - latency_bandwidth_ratio summary: mean=0.7197, std=3.0620
+2025-04-27 21:56:21,885 - src.utils.logger - INFO - path_cost summary: mean=15.5177, std=9.3479
+2025-04-27 21:56:21,886 - src.utils.logger - INFO - Final DataFrame shape: (7840, 30)
+2025-04-27 21:56:21,886 - src.utils.logger - WARNING - Expected 8000 samples, got 7840
+2025-04-27 21:56:21,887 - src.utils.logger - INFO - Num GPUs Available: 0
+2025-04-27 21:56:21,888 - src.utils.logger - INFO - Training classification model
+2025-04-27 21:56:21,931 - src.utils.logger - ERROR - Pipeline failed: The specified ratio required to remove samples from the minority class while trying to generate new samples. Please increase the ratio.
+2025-04-27 21:59:32,161 - src.utils.logger - INFO - Starting network path optimization pipeline
+2025-04-27 21:59:32,353 - src.utils.logger - INFO - Initial DataFrame shape: (8000, 18)
+2025-04-27 21:59:33,025 - src.utils.logger - INFO - path_cost column created successfully
+2025-04-27 21:59:33,026 - src.utils.logger - INFO - path_cost head: 0     8.240155
+1     8.477260
+2    13.921461
+3    10.922495
+4     7.662267
+Name: path_cost, dtype: float64
+2025-04-27 21:59:33,031 - src.utils.logger - INFO - Outliers in packet_loss: 0 samples
+2025-04-27 21:59:33,405 - src.utils.logger - INFO - Outliers detected by Isolation Forest: 160 samples
+2025-04-27 21:59:33,463 - src.utils.logger - INFO - Outliers summary:
+       as_path_length  local_pref  ...  local_pref_bandwidth   path_cost
+count      160.000000  160.000000  ...          1.600000e+02  160.000000
+mean         1.681250  110.375000  ...          4.590493e+05   39.984446
+std          0.780033   36.667596  ...          5.863139e+05   10.748272
+min          1.000000   80.000000  ...          2.000000e+02   23.189135
+25%          1.000000   90.000000  ...          7.912500e+03   27.770547
+50%          1.000000  100.000000  ...          1.000000e+05   44.929192
+75%          2.000000  120.000000  ...          8.900000e+05   47.952968
+max          3.000000  250.000000  ...          2.500000e+06   64.862082
+
+[8 rows x 29 columns]
+2025-04-27 21:59:33,495 - src.utils.logger - INFO - Feature correlation with is_best:
+bandwidth_ospf_state           0.583241
+bandwidth                      0.568993
+bandwidth_log                  0.558668
+local_pref_bandwidth           0.554984
+rtt_log                        0.450012
+jitter_log                     0.445920
+is_TenGigabitEthernet          0.441430
+route_stability_log            0.439598
+route_stability                0.436381
+latency                        0.433791
+rtt                            0.428244
+jitter                         0.422687
+latency_packet_loss            0.353102
+is_FastEthernet                0.328101
+ospf_state                     0.324643
+latency_bandwidth_ratio_log    0.323617
+packet_loss_bin                0.321101
+packet_loss_log                0.315367
+packet_loss                    0.300315
+queue_length                   0.242394
+local_pref                     0.234940
+as_path_length                 0.221345
+latency_bandwidth_ratio        0.200132
+resource_usage                 0.125564
+is_GigabitEthernet             0.115498
+cpu_usage                      0.114861
+memory_usage                   0.097144
+bandwidth_utilization          0.003588
+Name: is_best, dtype: float64
+2025-04-27 21:59:33,496 - src.utils.logger - INFO - Feature correlation with path_cost:
+rtt_log                        0.953520
+route_stability                0.951620
+rtt                            0.944237
+latency                        0.938182
+jitter                         0.931728
+jitter_log                     0.917830
+route_stability_log            0.914719
+latency_packet_loss            0.882485
+packet_loss_bin                0.794377
+packet_loss                    0.783056
+packet_loss_log                0.772100
+latency_bandwidth_ratio_log    0.629440
+queue_length                   0.609013
+latency_bandwidth_ratio        0.476309
+bandwidth_log                  0.457353
+bandwidth_utilization          0.402686
+bandwidth                      0.337827
+local_pref_bandwidth           0.313374
+bandwidth_ospf_state           0.265882
+resource_usage                 0.196287
+cpu_usage                      0.172286
+memory_usage                   0.164890
+is_FastEthernet                0.161261
+is_TenGigabitEthernet          0.140480
+as_path_length                 0.056211
+is_GigabitEthernet             0.019432
+ospf_state                     0.008021
+local_pref                     0.003383
+Name: path_cost, dtype: float64
+2025-04-27 21:59:33,497 - src.utils.logger - INFO - FastEthernet packet_loss: mean=7.7573, std=11.6450
+2025-04-27 21:59:33,498 - src.utils.logger - INFO - GigabitEthernet packet_loss: mean=8.0931, std=11.8554
+2025-04-27 21:59:33,499 - src.utils.logger - INFO - TenGigabitEthernet packet_loss: mean=7.1091, std=10.8339
+2025-04-27 21:59:33,499 - src.utils.logger - INFO - packet_loss statistics: mean=7.6543, std=11.4592
+2025-04-27 21:59:33,501 - src.utils.logger - INFO - packet_loss quantiles: 0.25     0.0000
+0.50     1.6400
+0.75    13.0525
+0.95    33.8005
+Name: packet_loss, dtype: float64
+2025-04-27 21:59:33,501 - src.utils.logger - INFO - High packet loss (>10): 2212 samples, 28.21%
+2025-04-27 21:59:33,548 - src.utils.logger - INFO - Generated data summary:
+       as_path_length   local_pref  ...  local_pref_bandwidth    path_cost
+count     7840.000000  7840.000000  ...          7.840000e+03  7840.000000
+mean         1.649745   111.380102  ...          3.473309e+05    15.248570
+std          0.784806    36.693389  ...          5.038689e+05     9.151602
+min          1.000000    80.000000  ...          2.400000e+02     4.787020
+25%          1.000000    90.000000  ...          1.000000e+04     8.745132
+50%          1.000000   100.000000  ...          9.000000e+04    10.824028
+75%          2.000000   120.000000  ...          8.010000e+05    22.862713
+max          3.000000   250.000000  ...          2.500000e+06    51.794205
+
+[8 rows x 29 columns]
+2025-04-27 21:59:33,549 - src.utils.logger - INFO - is_best distribution: is_best
+0    0.565561
+1    0.434439
+Name: proportion, dtype: float64
+2025-04-27 21:59:33,549 - src.utils.logger - INFO - jitter summary: mean=12.1527, std=14.2595
+2025-04-27 21:59:33,549 - src.utils.logger - INFO - rtt summary: mean=77.3193, std=59.3165
+2025-04-27 21:59:33,549 - src.utils.logger - INFO - cpu_usage summary: mean=38.7554, std=18.0609
+2025-04-27 21:59:33,550 - src.utils.logger - INFO - memory_usage summary: mean=45.8154, std=15.1169
+2025-04-27 21:59:33,550 - src.utils.logger - INFO - queue_length summary: mean=38.5085, std=56.5508
+2025-04-27 21:59:33,550 - src.utils.logger - INFO - route_stability summary: mean=4.3714, std=5.0681
+2025-04-27 21:59:33,550 - src.utils.logger - INFO - latency_bandwidth_ratio summary: mean=0.6093, std=2.5492
+2025-04-27 21:59:33,550 - src.utils.logger - INFO - path_cost summary: mean=15.2486, std=9.1516
+2025-04-27 21:59:33,550 - src.utils.logger - INFO - Final DataFrame shape: (7840, 30)
+2025-04-27 21:59:33,550 - src.utils.logger - WARNING - Expected 8000 samples, got 7840
+2025-04-27 21:59:33,551 - src.utils.logger - INFO - Num GPUs Available: 0
+2025-04-27 21:59:33,551 - src.utils.logger - INFO - Training classification model
+2025-04-27 21:59:33,576 - src.utils.logger - INFO - Current pos/neg ratio: 0.7684
+2025-04-27 21:59:33,908 - src.utils.logger - INFO - Class weights: {0: 1.0, 1: 1.3960747663550879}
+2025-04-27 21:59:33,910 - src.utils.logger - INFO - Classification data: y_train distribution: (array([0, 1], dtype=int64), array([2660, 2675], dtype=int64))
+2025-04-27 21:59:33,913 - src.utils.logger - INFO - Starting Optuna trial 0
+2025-04-27 21:59:34,033 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.5947687996262685}
+2025-04-27 21:59:52,878 - src.utils.logger - INFO - Training completed
+2025-04-27 21:59:52,989 - src.utils.logger - INFO - Validation: Accuracy=0.9428, Precision=0.8975, Recall=1.0000
+2025-04-27 21:59:53,151 - src.utils.logger - INFO - Test: Accuracy=0.9428, Precision=0.8975, Recall=1.0000
+2025-04-27 21:59:53,417 - src.utils.logger - INFO - Optimal threshold (max F1): 0.7129, F1: 0.9627
+2025-04-27 21:59:53,509 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.5000
+2025-04-27 21:59:53,514 - src.utils.logger - INFO - Test F1 Score: 0.9627, Recall: 0.9906
+2025-04-27 21:59:53,515 - src.utils.logger - INFO - Starting Optuna trial 1
+2025-04-27 21:59:53,579 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.5947687996262685}
+2025-04-27 22:00:10,118 - src.utils.logger - INFO - Training completed
+2025-04-27 22:00:10,219 - src.utils.logger - INFO - Validation: Accuracy=0.9494, Precision=0.9096, Recall=0.9981
+2025-04-27 22:00:10,369 - src.utils.logger - INFO - Test: Accuracy=0.9494, Precision=0.9096, Recall=0.9981
+2025-04-27 22:00:10,626 - src.utils.logger - INFO - Optimal threshold (max F1): 0.6477, F1: 0.9630
+2025-04-27 22:00:10,717 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.5000
+2025-04-27 22:00:10,720 - src.utils.logger - INFO - Test F1 Score: 0.9630, Recall: 0.9981
+2025-04-27 22:00:10,721 - src.utils.logger - INFO - Starting Optuna trial 2
+2025-04-27 22:00:10,784 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.5947687996262685}
+2025-04-27 22:01:01,368 - src.utils.logger - INFO - Training completed
+2025-04-27 22:01:01,559 - src.utils.logger - INFO - Validation: Accuracy=0.9560, Precision=0.9191, Recall=1.0000
+2025-04-27 22:01:01,748 - src.utils.logger - INFO - Test: Accuracy=0.9560, Precision=0.9191, Recall=1.0000
+2025-04-27 22:01:02,031 - src.utils.logger - INFO - Optimal threshold (max F1): 0.6774, F1: 0.9699
+2025-04-27 22:01:02,136 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.5000
+2025-04-27 22:01:02,140 - src.utils.logger - INFO - Test F1 Score: 0.9699, Recall: 0.9963
+2025-04-27 22:01:02,140 - src.utils.logger - INFO - Starting Optuna trial 3
+2025-04-27 22:01:02,202 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.5947687996262685}
+2025-04-27 22:01:25,934 - src.utils.logger - INFO - Training completed
+2025-04-27 22:01:26,066 - src.utils.logger - INFO - Validation: Accuracy=0.9503, Precision=0.9139, Recall=0.9944
+2025-04-27 22:01:26,172 - src.utils.logger - INFO - Test: Accuracy=0.9503, Precision=0.9139, Recall=0.9944
+2025-04-27 22:01:26,453 - src.utils.logger - INFO - Optimal threshold (max F1): 0.6674, F1: 0.9560
+2025-04-27 22:01:26,538 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.5000
+2025-04-27 22:01:26,541 - src.utils.logger - INFO - Test F1 Score: 0.9560, Recall: 0.9775
+2025-04-27 22:01:26,542 - src.utils.logger - INFO - Starting Optuna trial 4
+2025-04-27 22:01:26,605 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.5947687996262685}
+2025-04-27 22:02:04,641 - src.utils.logger - INFO - Training completed
+2025-04-27 22:02:04,744 - src.utils.logger - INFO - Validation: Accuracy=0.9531, Precision=0.9144, Recall=1.0000
+2025-04-27 22:02:04,843 - src.utils.logger - INFO - Test: Accuracy=0.9531, Precision=0.9144, Recall=1.0000
+2025-04-27 22:02:05,095 - src.utils.logger - INFO - Optimal threshold (max F1): 0.6726, F1: 0.9644
+2025-04-27 22:02:05,183 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.5000
+2025-04-27 22:02:05,186 - src.utils.logger - INFO - Test F1 Score: 0.9644, Recall: 0.9906
+2025-04-27 22:02:05,187 - src.utils.logger - INFO - Best hyperparameters: {'n_layers': 4, 'dropout_rate': 0.29621973136639546, 'l2_strength': 0.00032955872301396736, 'learning_rate': 0.0014474149843643033, 'batch_size': 18}
+2025-04-27 22:02:05,233 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.5947687996262685}
+2025-04-27 22:02:47,775 - src.utils.logger - INFO - Training completed
+2025-04-27 22:02:47,935 - src.utils.logger - INFO - Validation: Accuracy=0.9672, Precision=0.9416, Recall=0.9963
+2025-04-27 22:02:48,063 - src.utils.logger - INFO - Test: Accuracy=0.9672, Precision=0.9416, Recall=0.9963
+2025-04-27 22:02:48,380 - src.utils.logger - INFO - Optimal threshold (max F1): 0.6296, F1: 0.9707
+2025-04-27 22:02:48,546 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.5000
+2025-04-27 22:02:48,551 - src.utils.logger - INFO - Test F1 Score: 0.9707, Recall: 0.9925
+2025-04-27 22:02:48,551 - src.utils.logger - INFO - Fold 1 accuracy: 0.5000
+2025-04-27 22:02:48,552 - src.utils.logger - INFO - Starting Optuna trial 0
+2025-04-27 22:02:48,639 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.59625993454878}
+2025-04-27 22:03:37,038 - src.utils.logger - INFO - Training completed
+2025-04-27 22:03:37,190 - src.utils.logger - INFO - Validation: Accuracy=0.9213, Precision=0.8657, Recall=0.9981
+2025-04-27 22:03:37,303 - src.utils.logger - INFO - Test: Accuracy=0.9213, Precision=0.8657, Recall=0.9981
+2025-04-27 22:03:37,607 - src.utils.logger - INFO - Optimal threshold (max F1): 0.5848, F1: 0.9358
+2025-04-27 22:03:37,699 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.5002
+2025-04-27 22:03:37,703 - src.utils.logger - INFO - Test F1 Score: 0.9358, Recall: 0.9795
+2025-04-27 22:03:37,703 - src.utils.logger - INFO - Starting Optuna trial 1
+2025-04-27 22:03:37,781 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.59625993454878}
+2025-04-27 22:03:51,840 - src.utils.logger - INFO - Training completed
+2025-04-27 22:03:51,946 - src.utils.logger - INFO - Validation: Accuracy=0.9372, Precision=0.8889, Recall=1.0000
+2025-04-27 22:03:52,056 - src.utils.logger - INFO - Test: Accuracy=0.9372, Precision=0.8889, Recall=1.0000
+2025-04-27 22:03:52,302 - src.utils.logger - INFO - Optimal threshold (max F1): 0.6923, F1: 0.9525
+2025-04-27 22:03:52,389 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.5002
+2025-04-27 22:03:52,393 - src.utils.logger - INFO - Test F1 Score: 0.9525, Recall: 0.9907
+2025-04-27 22:03:52,393 - src.utils.logger - INFO - Starting Optuna trial 2
+2025-04-27 22:03:52,452 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.59625993454878}
+2025-04-27 22:04:41,749 - src.utils.logger - INFO - Training completed
+2025-04-27 22:04:41,914 - src.utils.logger - INFO - Validation: Accuracy=0.9513, Precision=0.9130, Recall=0.9981
+2025-04-27 22:04:42,025 - src.utils.logger - INFO - Test: Accuracy=0.9513, Precision=0.9130, Recall=0.9981
+2025-04-27 22:04:42,342 - src.utils.logger - INFO - Optimal threshold (max F1): 0.6670, F1: 0.9613
+2025-04-27 22:04:42,509 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.5002
+2025-04-27 22:04:42,512 - src.utils.logger - INFO - Test F1 Score: 0.9613, Recall: 0.9963
+2025-04-27 22:04:42,512 - src.utils.logger - INFO - Starting Optuna trial 3
+2025-04-27 22:04:42,561 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.59625993454878}
+2025-04-27 22:05:02,410 - src.utils.logger - INFO - Training completed
+2025-04-27 22:05:02,601 - src.utils.logger - INFO - Validation: Accuracy=0.9016, Precision=0.8404, Recall=0.9925
+2025-04-27 22:05:02,724 - src.utils.logger - INFO - Test: Accuracy=0.9016, Precision=0.8404, Recall=0.9925
+2025-04-27 22:05:03,026 - src.utils.logger - INFO - Optimal threshold (max F1): 0.7199, F1: 0.9327
+2025-04-27 22:05:03,172 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.5001
+2025-04-27 22:05:03,177 - src.utils.logger - INFO - Test F1 Score: 0.9327, Recall: 0.9571
+2025-04-27 22:05:03,179 - src.utils.logger - INFO - Starting Optuna trial 4
+2025-04-27 22:05:03,239 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.59625993454878}
+2025-04-27 22:05:22,004 - src.utils.logger - INFO - Training completed
+2025-04-27 22:05:22,119 - src.utils.logger - INFO - Validation: Accuracy=0.9447, Precision=0.9022, Recall=0.9981
+2025-04-27 22:05:22,231 - src.utils.logger - INFO - Test: Accuracy=0.9447, Precision=0.9022, Recall=0.9981
+2025-04-27 22:05:22,473 - src.utils.logger - INFO - Optimal threshold (max F1): 0.7535, F1: 0.9607
+2025-04-27 22:05:22,594 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.5001
+2025-04-27 22:05:22,599 - src.utils.logger - INFO - Test F1 Score: 0.9607, Recall: 0.9795
+2025-04-27 22:05:22,600 - src.utils.logger - INFO - Best hyperparameters: {'n_layers': 5, 'dropout_rate': 0.3966725570782505, 'l2_strength': 0.001773552910256489, 'learning_rate': 6.449909857393109e-05, 'batch_size': 23}
+2025-04-27 22:05:22,659 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.59625993454878}
+2025-04-27 22:06:06,104 - src.utils.logger - INFO - Training completed
+2025-04-27 22:06:06,215 - src.utils.logger - INFO - Validation: Accuracy=0.9578, Precision=0.9270, Recall=0.9944
+2025-04-27 22:06:06,389 - src.utils.logger - INFO - Test: Accuracy=0.9578, Precision=0.9270, Recall=0.9944
+2025-04-27 22:06:06,642 - src.utils.logger - INFO - Optimal threshold (max F1): 0.6919, F1: 0.9644
+2025-04-27 22:06:06,743 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.5001
+2025-04-27 22:06:06,747 - src.utils.logger - INFO - Test F1 Score: 0.9644, Recall: 0.9869
+2025-04-27 22:06:06,747 - src.utils.logger - INFO - Fold 2 accuracy: 0.5001
+2025-04-27 22:06:06,748 - src.utils.logger - INFO - Starting Optuna trial 0
+2025-04-27 22:06:06,832 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.608290155440339}
+2025-04-27 22:07:13,109 - src.utils.logger - INFO - Training completed
+2025-04-27 22:07:13,315 - src.utils.logger - INFO - Validation: Accuracy=0.9325, Precision=0.8922, Recall=0.9891
+2025-04-27 22:07:13,443 - src.utils.logger - INFO - Test: Accuracy=0.9325, Precision=0.8922, Recall=0.9891
+2025-04-27 22:07:13,857 - src.utils.logger - INFO - Optimal threshold (max F1): 0.4790, F1: 0.9401
+2025-04-27 22:07:14,012 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.5027
+2025-04-27 22:07:14,015 - src.utils.logger - INFO - Test F1 Score: 0.9401, Recall: 0.9946
+2025-04-27 22:07:14,015 - src.utils.logger - INFO - Starting Optuna trial 1
+2025-04-27 22:07:14,104 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.608290155440339}
+2025-04-27 22:07:59,232 - src.utils.logger - INFO - Training completed
+2025-04-27 22:07:59,334 - src.utils.logger - INFO - Validation: Accuracy=0.9410, Precision=0.9055, Recall=0.9891
+2025-04-27 22:07:59,434 - src.utils.logger - INFO - Test: Accuracy=0.9410, Precision=0.9055, Recall=0.9891
+2025-04-27 22:07:59,755 - src.utils.logger - INFO - Optimal threshold (max F1): 0.5641, F1: 0.9504
+2025-04-27 22:07:59,844 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.5021
+2025-04-27 22:07:59,848 - src.utils.logger - INFO - Test F1 Score: 0.9504, Recall: 0.9891
+2025-04-27 22:07:59,848 - src.utils.logger - INFO - Starting Optuna trial 2
+2025-04-27 22:07:59,949 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.608290155440339}
+2025-04-27 22:08:35,582 - src.utils.logger - INFO - Training completed
+2025-04-27 22:08:35,733 - src.utils.logger - INFO - Validation: Accuracy=0.9372, Precision=0.9076, Recall=0.9783
+2025-04-27 22:08:35,842 - src.utils.logger - INFO - Test: Accuracy=0.9372, Precision=0.9076, Recall=0.9783
+2025-04-27 22:08:36,150 - src.utils.logger - INFO - Optimal threshold (max F1): 0.4679, F1: 0.9445
+2025-04-27 22:08:36,239 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.5022
+2025-04-27 22:08:36,241 - src.utils.logger - INFO - Test F1 Score: 0.9445, Recall: 0.9873
+2025-04-27 22:08:36,242 - src.utils.logger - INFO - Starting Optuna trial 3
+2025-04-27 22:08:36,302 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.608290155440339}
+2025-04-27 22:09:08,949 - src.utils.logger - INFO - Training completed
+2025-04-27 22:09:09,108 - src.utils.logger - INFO - Validation: Accuracy=0.9438, Precision=0.9141, Recall=0.9837
+2025-04-27 22:09:09,219 - src.utils.logger - INFO - Test: Accuracy=0.9438, Precision=0.9141, Recall=0.9837
+2025-04-27 22:09:09,596 - src.utils.logger - INFO - Optimal threshold (max F1): 0.3742, F1: 0.9523
+2025-04-27 22:09:09,736 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.5022
+2025-04-27 22:09:09,740 - src.utils.logger - INFO - Test F1 Score: 0.9523, Recall: 0.9946
+2025-04-27 22:09:09,740 - src.utils.logger - INFO - Starting Optuna trial 4
+2025-04-27 22:09:09,778 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.608290155440339}
+2025-04-27 22:09:19,088 - src.utils.logger - INFO - Training completed
+2025-04-27 22:09:19,906 - src.utils.logger - INFO - Validation: Accuracy=0.9466, Precision=0.9188, Recall=0.9837
+2025-04-27 22:09:20,043 - src.utils.logger - INFO - Test: Accuracy=0.9466, Precision=0.9188, Recall=0.9837
+2025-04-27 22:09:20,239 - src.utils.logger - INFO - Optimal threshold (max F1): 0.5512, F1: 0.9508
+2025-04-27 22:09:20,324 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.5017
+2025-04-27 22:09:20,327 - src.utils.logger - INFO - Test F1 Score: 0.9508, Recall: 0.9801
+2025-04-27 22:09:20,327 - src.utils.logger - INFO - Best hyperparameters: {'n_layers': 5, 'dropout_rate': 0.3711855305743509, 'l2_strength': 0.001452532679184425, 'learning_rate': 4.750681752749697e-05, 'batch_size': 31}
+2025-04-27 22:09:20,388 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.608290155440339}
+2025-04-27 22:09:56,049 - src.utils.logger - INFO - Training completed
+2025-04-27 22:09:56,179 - src.utils.logger - INFO - Validation: Accuracy=0.9503, Precision=0.9250, Recall=0.9837
+2025-04-27 22:09:56,287 - src.utils.logger - INFO - Test: Accuracy=0.9503, Precision=0.9250, Recall=0.9837
+2025-04-27 22:09:56,505 - src.utils.logger - INFO - Optimal threshold (max F1): 0.4239, F1: 0.9571
+2025-04-27 22:09:56,600 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.5019
+2025-04-27 22:09:56,604 - src.utils.logger - INFO - Test F1 Score: 0.9571, Recall: 0.9909
+2025-04-27 22:09:56,604 - src.utils.logger - INFO - Fold 3 accuracy: 0.5019
+2025-04-27 22:09:56,605 - src.utils.logger - INFO - Starting Optuna trial 0
+2025-04-27 22:09:56,662 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.5836734693876817}
+2025-04-27 22:10:49,540 - src.utils.logger - INFO - Training completed
+2025-04-27 22:10:49,658 - src.utils.logger - INFO - Validation: Accuracy=0.9419, Precision=0.9002, Recall=0.9904
+2025-04-27 22:10:49,789 - src.utils.logger - INFO - Test: Accuracy=0.9419, Precision=0.9002, Recall=0.9904
+2025-04-27 22:10:50,091 - src.utils.logger - INFO - Optimal threshold (max F1): 0.7320, F1: 0.9496
+2025-04-27 22:10:50,263 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.5000
+2025-04-27 22:10:50,267 - src.utils.logger - INFO - Test F1 Score: 0.9496, Recall: 0.9615
+2025-04-27 22:10:50,269 - src.utils.logger - INFO - Starting Optuna trial 1
+2025-04-27 22:10:50,320 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.5836734693876817}
+2025-04-27 22:11:37,008 - src.utils.logger - INFO - Training completed
+2025-04-27 22:11:37,114 - src.utils.logger - INFO - Validation: Accuracy=0.9428, Precision=0.9018, Recall=0.9904
+2025-04-27 22:11:37,219 - src.utils.logger - INFO - Test: Accuracy=0.9428, Precision=0.9018, Recall=0.9904
+2025-04-27 22:11:37,425 - src.utils.logger - INFO - Optimal threshold (max F1): 0.7659, F1: 0.9534
+2025-04-27 22:11:37,513 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.5000
+2025-04-27 22:11:37,517 - src.utils.logger - INFO - Test F1 Score: 0.9534, Recall: 0.9653
+2025-04-27 22:11:37,517 - src.utils.logger - INFO - Starting Optuna trial 2
+2025-04-27 22:11:37,594 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.5836734693876817}
+2025-04-27 22:11:49,705 - src.utils.logger - INFO - Training completed
+2025-04-27 22:11:49,825 - src.utils.logger - INFO - Validation: Accuracy=0.9428, Precision=0.9149, Recall=0.9730
+2025-04-27 22:11:49,931 - src.utils.logger - INFO - Test: Accuracy=0.9428, Precision=0.9149, Recall=0.9730
+2025-04-27 22:11:50,166 - src.utils.logger - INFO - Optimal threshold (max F1): 0.2543, F1: 0.9476
+2025-04-27 22:11:50,262 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.4991
+2025-04-27 22:11:50,265 - src.utils.logger - INFO - Test F1 Score: 0.9476, Recall: 0.9923
+2025-04-27 22:11:50,266 - src.utils.logger - INFO - Starting Optuna trial 3
+2025-04-27 22:11:50,408 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.5836734693876817}
+2025-04-27 22:12:31,640 - src.utils.logger - INFO - Training completed
+2025-04-27 22:12:31,747 - src.utils.logger - INFO - Validation: Accuracy=0.8557, Precision=0.8450, Recall=0.8613
+2025-04-27 22:12:31,846 - src.utils.logger - INFO - Test: Accuracy=0.8557, Precision=0.8450, Recall=0.8613
+2025-04-27 22:12:32,107 - src.utils.logger - INFO - Optimal threshold (max F1): 0.4622, F1: 0.8606
+2025-04-27 22:12:32,195 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.4994
+2025-04-27 22:12:32,198 - src.utils.logger - INFO - Test F1 Score: 0.8606, Recall: 0.8921
+2025-04-27 22:12:32,199 - src.utils.logger - INFO - Starting Optuna trial 4
+2025-04-27 22:12:32,245 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.5836734693876817}
+2025-04-27 22:12:53,944 - src.utils.logger - INFO - Training completed
+2025-04-27 22:12:54,047 - src.utils.logger - INFO - Validation: Accuracy=0.9410, Precision=0.8986, Recall=0.9904
+2025-04-27 22:12:54,149 - src.utils.logger - INFO - Test: Accuracy=0.9410, Precision=0.8986, Recall=0.9904
+2025-04-27 22:12:54,377 - src.utils.logger - INFO - Optimal threshold (max F1): 0.5150, F1: 0.9440
+2025-04-27 22:12:54,475 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.4991
+2025-04-27 22:12:54,479 - src.utils.logger - INFO - Test F1 Score: 0.9440, Recall: 0.9904
+2025-04-27 22:12:54,479 - src.utils.logger - INFO - Best hyperparameters: {'n_layers': 3, 'dropout_rate': 0.3155063022325286, 'l2_strength': 0.00599198328396686, 'learning_rate': 0.0001173677794389889, 'batch_size': 26}
+2025-04-27 22:12:54,533 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.5836734693876817}
+2025-04-27 22:13:30,484 - src.utils.logger - INFO - Training completed
+2025-04-27 22:13:30,590 - src.utils.logger - INFO - Validation: Accuracy=0.9475, Precision=0.9141, Recall=0.9846
+2025-04-27 22:13:30,709 - src.utils.logger - INFO - Test: Accuracy=0.9475, Precision=0.9141, Recall=0.9846
+2025-04-27 22:13:30,950 - src.utils.logger - INFO - Optimal threshold (max F1): 0.6211, F1: 0.9523
+2025-04-27 22:13:31,088 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.4996
+2025-04-27 22:13:31,093 - src.utils.logger - INFO - Test F1 Score: 0.9523, Recall: 0.9807
+2025-04-27 22:13:31,093 - src.utils.logger - INFO - Fold 4 accuracy: 0.4996
+2025-04-27 22:13:31,095 - src.utils.logger - INFO - Starting Optuna trial 0
+2025-04-27 22:13:31,195 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 1.5947687996262685}
+2025-04-27 22:14:08,959 - src.utils.logger - INFO - Starting network path optimization pipeline
+2025-04-27 22:14:08,961 - src.utils.logger - ERROR - Pipeline failed: Random.choice() got an unexpected keyword argument 'weights'
+2025-04-27 22:14:33,923 - src.utils.logger - INFO - Starting network path optimization pipeline
+2025-04-27 22:14:34,149 - src.utils.logger - INFO - Initial DataFrame shape: (8000, 18)
+2025-04-27 22:14:34,877 - src.utils.logger - INFO - path_cost column created successfully
+2025-04-27 22:14:34,878 - src.utils.logger - INFO - path_cost head: 0    26.538709
+1    29.242888
+2    47.619214
+3    25.105268
+4     9.888475
+Name: path_cost, dtype: float64
+2025-04-27 22:14:34,879 - src.utils.logger - INFO - Outliers in packet_loss: 0 samples
+2025-04-27 22:14:35,172 - src.utils.logger - INFO - Outliers detected by Isolation Forest: 160 samples
+2025-04-27 22:14:35,259 - src.utils.logger - INFO - Outliers summary:
+       as_path_length  local_pref  ...  local_pref_bandwidth   path_cost
+count      160.000000   160.00000  ...          1.600000e+02  160.000000
+mean         1.625000   112.68750  ...          5.301449e+05   38.400094
+std          0.733305    36.00702  ...          5.511904e+05   11.194273
+min          1.000000    80.00000  ...          4.000000e+02   23.046798
+25%          1.000000   100.00000  ...          1.000000e+04   27.121275
+50%          1.000000   100.00000  ...          1.222500e+05   42.727462
+75%          2.000000   120.00000  ...          1.000000e+06   48.775801
+max          3.000000   250.00000  ...          2.500000e+06   60.147245
+
+[8 rows x 29 columns]
+2025-04-27 22:14:35,297 - src.utils.logger - INFO - Feature correlation with is_best:
+local_pref_bandwidth           0.559608
+bandwidth_ospf_state           0.545301
+bandwidth                      0.448003
+is_TenGigabitEthernet          0.386393
+bandwidth_log                  0.371575
+local_pref                     0.368651
+route_stability_log            0.233605
+jitter_log                     0.223362
+rtt_log                        0.220426
+route_stability                0.209401
+is_FastEthernet                0.207290
+latency                        0.198953
+rtt                            0.198254
+jitter                         0.197866
+ospf_state                     0.193538
+is_GigabitEthernet             0.178111
+latency_packet_loss            0.162697
+packet_loss                    0.158209
+packet_loss_bin                0.156888
+queue_length                   0.155340
+packet_loss_log                0.151922
+latency_bandwidth_ratio_log    0.138297
+as_path_length                 0.133796
+resource_usage                 0.088194
+cpu_usage                      0.079141
+latency_bandwidth_ratio        0.078826
+memory_usage                   0.071498
+bandwidth_utilization          0.005229
+Name: is_best, dtype: float64
+2025-04-27 22:14:35,297 - src.utils.logger - INFO - Feature correlation with path_cost:
+route_stability                0.954033
+rtt_log                        0.951142
+rtt                            0.945874
+latency                        0.940557
+jitter                         0.931277
+jitter_log                     0.913778
+route_stability_log            0.913074
+latency_packet_loss            0.880320
+packet_loss                    0.778257
+packet_loss_bin                0.767225
+packet_loss_log                0.749108
+latency_bandwidth_ratio_log    0.656421
+queue_length                   0.600549
+latency_bandwidth_ratio        0.492918
+bandwidth_log                  0.479577
+bandwidth_utilization          0.420385
+bandwidth                      0.341629
+local_pref_bandwidth           0.320845
+bandwidth_ospf_state           0.271182
+is_FastEthernet                0.188615
+resource_usage                 0.168990
+cpu_usage                      0.156749
+is_TenGigabitEthernet          0.154695
+memory_usage                   0.127780
+as_path_length                 0.063715
+is_GigabitEthernet             0.034538
+local_pref                     0.015019
+ospf_state                     0.008548
+Name: path_cost, dtype: float64
+2025-04-27 22:14:35,299 - src.utils.logger - INFO - FastEthernet packet_loss: mean=8.8732, std=12.1773
+2025-04-27 22:14:35,300 - src.utils.logger - INFO - GigabitEthernet packet_loss: mean=8.5073, std=12.1802
+2025-04-27 22:14:35,302 - src.utils.logger - INFO - TenGigabitEthernet packet_loss: mean=7.3575, std=10.7094
+2025-04-27 22:14:35,302 - src.utils.logger - INFO - packet_loss statistics: mean=8.2494, std=11.7289
+2025-04-27 22:14:35,304 - src.utils.logger - INFO - packet_loss quantiles: 0.25     0.0000
+0.50     1.8800
+0.75    14.8300
+0.95    34.0505
+Name: packet_loss, dtype: float64
+2025-04-27 22:14:35,305 - src.utils.logger - INFO - High packet loss (>10): 2410 samples, 30.74%
+2025-04-27 22:14:35,374 - src.utils.logger - INFO - Generated data summary:
+       as_path_length   local_pref  ...  local_pref_bandwidth    path_cost
+count     7840.000000  7840.000000  ...          7.840000e+03  7840.000000
+mean         1.655102   111.830357  ...          3.468743e+05    15.578994
+std          0.781809    37.261525  ...          5.072677e+05     9.404845
+min          1.000000    80.000000  ...          2.000000e+02     4.973180
+25%          1.000000    90.000000  ...          1.000000e+04     8.891194
+50%          1.000000   100.000000  ...          9.000000e+04    11.046134
+75%          2.000000   120.000000  ...          8.000000e+05    23.188628
+max          3.000000   250.000000  ...          2.500000e+06    56.271891
+
+[8 rows x 29 columns]
+2025-04-27 22:14:35,376 - src.utils.logger - INFO - is_best distribution: is_best
+0    0.896939
+1    0.103061
+Name: proportion, dtype: float64
+2025-04-27 22:14:35,376 - src.utils.logger - INFO - jitter summary: mean=12.4675, std=14.6575
+2025-04-27 22:14:35,377 - src.utils.logger - INFO - rtt summary: mean=78.7211, std=60.0946
+2025-04-27 22:14:35,377 - src.utils.logger - INFO - cpu_usage summary: mean=39.1392, std=18.3611
+2025-04-27 22:14:35,377 - src.utils.logger - INFO - memory_usage summary: mean=46.1332, std=15.2553
+2025-04-27 22:14:35,378 - src.utils.logger - INFO - queue_length summary: mean=40.0127, std=57.6305
+2025-04-27 22:14:35,378 - src.utils.logger - INFO - route_stability summary: mean=4.5093, std=5.1836
+2025-04-27 22:14:35,378 - src.utils.logger - INFO - latency_bandwidth_ratio summary: mean=0.7375, std=3.1388
+2025-04-27 22:14:35,378 - src.utils.logger - INFO - path_cost summary: mean=15.5790, std=9.4048
+2025-04-27 22:14:35,378 - src.utils.logger - INFO - Final DataFrame shape: (7840, 30)
+2025-04-27 22:14:35,379 - src.utils.logger - WARNING - Expected 8000 samples, got 7840
+2025-04-27 22:14:35,380 - src.utils.logger - INFO - Num GPUs Available: 0
+2025-04-27 22:14:35,380 - src.utils.logger - INFO - Training classification model
+2025-04-27 22:14:36,206 - src.utils.logger - INFO - Starting Optuna trial 0
+2025-04-27 22:14:36,322 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 7.75917525773036}
+2025-04-27 22:14:56,629 - src.utils.logger - INFO - Training completed
+2025-04-27 22:14:56,758 - src.utils.logger - INFO - Validation: Accuracy=0.7532, Precision=0.2938, Recall=1.0000
+2025-04-27 22:14:56,891 - src.utils.logger - INFO - Test: Accuracy=0.7532, Precision=0.2938, Recall=1.0000
+2025-04-27 22:14:57,085 - src.utils.logger - INFO - Optimal threshold (max F1): 0.9733, F1: 0.8270
+2025-04-27 22:14:57,199 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.8061
+2025-04-27 22:14:57,202 - src.utils.logger - INFO - Test F1 Score: 0.8270, Recall: 0.8758
+2025-04-27 22:14:57,203 - src.utils.logger - INFO - Starting Optuna trial 1
+2025-04-27 22:14:57,242 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 7.75917525773036}
+2025-04-27 22:15:06,491 - src.utils.logger - INFO - Training completed
+2025-04-27 22:15:06,687 - src.utils.logger - INFO - Validation: Accuracy=0.9624, Precision=0.7500, Recall=0.9503
+2025-04-27 22:15:06,915 - src.utils.logger - INFO - Test: Accuracy=0.9624, Precision=0.7500, Recall=0.9503
+2025-04-27 22:15:07,132 - src.utils.logger - INFO - Optimal threshold (max F1): 0.6784, F1: 0.8485
+2025-04-27 22:15:07,269 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.8117
+2025-04-27 22:15:07,274 - src.utils.logger - INFO - Test F1 Score: 0.8485, Recall: 0.8696
+2025-04-27 22:15:07,275 - src.utils.logger - INFO - Starting Optuna trial 2
+2025-04-27 22:15:07,359 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 7.75917525773036}
+2025-04-27 22:15:34,111 - src.utils.logger - INFO - Training completed
+2025-04-27 22:15:34,584 - src.utils.logger - INFO - Validation: Accuracy=0.9585, Precision=0.7162, Recall=0.9876
+2025-04-27 22:15:34,703 - src.utils.logger - INFO - Test: Accuracy=0.9585, Precision=0.7162, Recall=0.9876
+2025-04-27 22:15:34,908 - src.utils.logger - INFO - Optimal threshold (max F1): 0.8773, F1: 0.8709
+2025-04-27 22:15:35,015 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.8102
+2025-04-27 22:15:35,018 - src.utils.logger - INFO - Test F1 Score: 0.8709, Recall: 0.9006
+2025-04-27 22:15:35,018 - src.utils.logger - INFO - Starting Optuna trial 3
+2025-04-27 22:15:35,072 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 7.75917525773036}
+2025-04-27 22:15:44,038 - src.utils.logger - INFO - Training completed
+2025-04-27 22:15:44,155 - src.utils.logger - INFO - Validation: Accuracy=0.9668, Precision=0.7711, Recall=0.9627
+2025-04-27 22:15:44,283 - src.utils.logger - INFO - Test: Accuracy=0.9668, Precision=0.7711, Recall=0.9627
+2025-04-27 22:15:44,508 - src.utils.logger - INFO - Optimal threshold (max F1): 0.7644, F1: 0.8750
+2025-04-27 22:15:44,611 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.8167
+2025-04-27 22:15:44,613 - src.utils.logger - INFO - Test F1 Score: 0.8750, Recall: 0.8696
+2025-04-27 22:15:44,614 - src.utils.logger - INFO - Starting Optuna trial 4
+2025-04-27 22:15:44,696 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 7.75917525773036}
+2025-04-27 22:15:57,476 - src.utils.logger - INFO - Training completed
+2025-04-27 22:15:57,607 - src.utils.logger - INFO - Validation: Accuracy=0.9483, Precision=0.6667, Recall=0.9938
+2025-04-27 22:15:57,758 - src.utils.logger - INFO - Test: Accuracy=0.9483, Precision=0.6667, Recall=0.9938
+2025-04-27 22:15:57,995 - src.utils.logger - INFO - Optimal threshold (max F1): 0.9573, F1: 0.8685
+2025-04-27 22:15:58,103 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.8132
+2025-04-27 22:15:58,107 - src.utils.logger - INFO - Test F1 Score: 0.8685, Recall: 0.8820
+2025-04-27 22:15:58,107 - src.utils.logger - INFO - Best hyperparameters: {'n_layers': 3, 'dropout_rate': 0.20970522873156897, 'l2_strength': 0.00023229496323324544, 'learning_rate': 0.004262500068024766, 'batch_size': 37}
+2025-04-27 22:15:58,168 - src.utils.logger - INFO - Adjusted class weights: {0: 1.0, 1: 7.75917525773036}
+2025-04-27 22:16:38,710 - src.utils.logger - INFO - Training completed
+2025-04-27 22:16:38,820 - src.utils.logger - INFO - Validation: Accuracy=0.9688, Precision=0.7828, Recall=0.9627
+2025-04-27 22:16:38,938 - src.utils.logger - INFO - Test: Accuracy=0.9534, Precision=0.7014, Recall=0.9568
+2025-04-27 22:16:39,095 - src.utils.logger - INFO - Optimal threshold (max F1): 0.6963, F1: 0.8791
+2025-04-27 22:16:39,204 - src.utils.logger - INFO - Test Accuracy with optimal threshold: 0.7965
+2025-04-27 22:16:39,207 - src.utils.logger - INFO - Test F1 Score: 0.8222, Recall: 0.9136
+2025-04-27 22:16:39,455 - src.utils.logger - INFO - Saved plot to ./chart/Classification_4704.png
+2025-04-27 22:16:41,340 - src.utils.logger - INFO - XGBoost Classification Accuracy: 0.9681
+2025-04-27 22:16:41,340 - src.utils.logger - INFO - Training regression model
+2025-04-27 22:16:41,368 - src.utils.logger - INFO - Starting Optuna trial 0
+2025-04-27 22:16:41,689 - src.utils.logger - WARNING - weights_train is None, using uniform weights.
+2025-04-27 22:17:14,354 - src.utils.logger - INFO - Test R2: 0.9967
+2025-04-27 22:17:14,355 - src.utils.logger - INFO - Starting Optuna trial 1
+2025-04-27 22:17:14,415 - src.utils.logger - WARNING - weights_train is None, using uniform weights.
+2025-04-27 22:18:13,936 - src.utils.logger - INFO - Test R2: 0.9978
+2025-04-27 22:18:13,936 - src.utils.logger - INFO - Starting Optuna trial 2
+2025-04-27 22:18:13,967 - src.utils.logger - WARNING - weights_train is None, using uniform weights.
+2025-04-27 22:18:27,058 - src.utils.logger - INFO - Test R2: 0.9281
+2025-04-27 22:18:27,058 - src.utils.logger - INFO - Starting Optuna trial 3
+2025-04-27 22:18:27,181 - src.utils.logger - WARNING - weights_train is None, using uniform weights.
+2025-04-27 22:18:33,859 - src.utils.logger - INFO - Test R2: 0.5755
+2025-04-27 22:18:33,860 - src.utils.logger - INFO - Starting Optuna trial 4
+2025-04-27 22:18:33,946 - src.utils.logger - WARNING - weights_train is None, using uniform weights.
+2025-04-27 22:19:33,941 - src.utils.logger - INFO - Test R2: 0.9982
+2025-04-27 22:19:33,942 - src.utils.logger - INFO - Best hyperparameters: {'n_layers': 5, 'dropout_rate': 0.2775470034948351, 'l2_strength': 0.00019585524179510256, 'learning_rate': 0.0022584334317843117, 'batch_size': 50}
+2025-04-27 22:20:50,970 - src.utils.logger - INFO - Test R2: 0.9980
+2025-04-27 22:20:50,971 - src.utils.logger - INFO - R2 for minority class (is_best=1): 0.9736
+2025-04-27 22:20:51,263 - src.utils.logger - INFO - Saved plot to ./chart/Regression_4704.png
+2025-04-27 22:20:51,399 - src.utils.logger - INFO - XGBoost Regression R2: 0.9956
+2025-04-27 22:20:51,400 - src.utils.logger - INFO - Pipeline completed successfully

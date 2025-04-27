@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/AiNet.iml" filepath="$PROJECT_DIR$/.idea/AiNet.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/OBN.iml" filepath="$PROJECT_DIR$/.idea/OBN.iml" />
     </modules>
   </component>
 </project>

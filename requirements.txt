@@ -6,3 +6,6 @@ imblearn
 netmiko
 matplotlib
 pyyaml
+torch
+optuna
+xgboost
