@@ -32,15 +32,13 @@ ROC曲线（真阳性率-假阳性率）
 
 **8000数量级**
 
-![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Classification_17077.png)
-
-![PR曲线（精确率-召回率）](https://github.com/Ashisheng2005/OBN/blob/main/chart/Classification_pr_roc.png)
+![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Classification_4704.png)
 
 ![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Packet_Loss_Boxplot.png)
 
 ![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Packet_Loss_Distribution.png)
 
-![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Regression_10134.png)
+![](https://github.com/Ashisheng2005/OBN/blob/main/chart/Regression_4704.png)
 
 训练数据通过ospf和bgp结果通过算法模拟生成，如果想要更加接近现实可添加更复杂的数据。
 
